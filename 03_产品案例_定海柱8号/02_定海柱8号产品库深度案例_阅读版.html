@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>保险结构化产品库深度教学：定海柱8号案例</title>
+<style>
+:root{--ink:#202a36;--muted:#5b6a78;--blue:#185d8c;--pale:#f1f7fb;--line:#d7e1e8;--gold:#a96c13;--goldpale:#fff8e9;--green:#176b4d;--greenpale:#eef9f3}*{box-sizing:border-box}body{margin:0;background:#f5f7f9;color:var(--ink);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.wrap{max-width:1120px;margin:0 auto;padding:36px 30px 90px;background:#fff;min-height:100vh}h1{color:#183c59;font-size:2.1rem;line-height:1.35;margin:0 0 12px}h2{color:#183c59;background:var(--pale);border-left:5px solid var(--blue);padding:11px 15px;margin:48px 0 18px;font-size:1.45rem;line-height:1.5}h3{color:#214e70;margin:28px 0 10px;font-size:1.14rem}p{margin:11px 0}a{color:#155e95;text-underline-offset:3px}.lead{color:var(--muted);font-size:1.04rem}.notice{padding:14px 17px;background:var(--goldpale);border-left:4px solid #dc9d38;margin:18px 0}.facts{padding:14px 17px;background:var(--greenpale);border-left:4px solid #46a77a;margin:18px 0}.table-wrap{overflow:auto;margin:16px 0 22px}table{border-collapse:collapse;width:100%;line-height:1.56;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 11px;vertical-align:top;text-align:left}th{background:#eaf3f8;color:#214e70}tr:nth-child(even) td{background:#fbfcfd}code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}code{background:#eef2f5;border-radius:4px;padding:2px 5px}pre{white-space:pre-wrap;background:#f7f9fb;border:1px solid var(--line);border-radius:8px;padding:14px 16px;line-height:1.65;overflow:auto}.toc{background:#f8fafb;border:1px solid var(--line);padding:16px 22px;border-radius:8px}.toc ol{columns:2;margin:0}.toc li{margin:4px 0}.diagram{border:1px solid #cbdbe6;border-radius:10px;padding:16px;background:#fbfdff;margin:18px 0}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:center}.box{background:#eaf4fb;border:1px solid #78a9c6;border-radius:8px;padding:9px 13px;text-align:center;min-width:132px}.box.green{background:#eef9f3;border-color:#78b79b}.box.gold{background:#fff8e9;border-color:#d8aa61}.arrow{font-size:1.5rem;color:#47718a}.layer{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.layer .box{min-height:76px;display:flex;align-items:center;justify-content:center}.small{font-size:.9rem;color:var(--muted)}.check{color:var(--green);font-weight:600}.back{display:inline-block;margin:0 0 20px}.foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}@media(max-width:720px){body{font-size:15px}.wrap{padding:24px 16px 70px}h1{font-size:1.72rem}.toc ol{columns:1}.layer{grid-template-columns:1fr 1fr}.flow{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<a class="back" href="../../01_从零入门/02_十日快速复习/02_保险从零到产品库_十日入门教材.html#day-08">返回十日入门教材第 8 讲</a>
+<h1>保险结构化产品库深度教学：用定海柱8号读懂一款产品</h1>
+<p class="lead">面向产品经理的案例课。公开事实、通用设计和学习假设分开标注。后台字段、接口和页面均为教学示例，不能当作慧择、国富人寿或平安的内部实现。</p>
+<div class="notice"><strong>先记住：</strong>公开链接能确认产品名称、备案名称、承保机构、销售机构，以及 <code>prodId=104154</code> 和 <code>planId=108801</code>。页面数据中的 <code>planName</code> 为空，完整官方计划清单无法从该链接确认。</div>
+<div class="toc"><strong>目录</strong><ol><li><a href="#answer">先回答三个问题</a></li><li><a href="#map">一张总图</a></li><li><a href="#benefit">公开责任拆解</a></li><li><a href="#rules">输入与规则</a></li><li><a href="#quote">费率与报价</a></li><li><a href="#library">产品库完整设计</a></li><li><a href="#ownership">保司与平台分工</a></li><li><a href="#pm">PM 后台设计</a></li><li><a href="#case">从页面到保单</a></li><li><a href="#incidents">三个场景练习</a></li><li><a href="#quiz">练习与答案</a></li><li><a href="#glm">与 GLM 0301 至 0306 衔接</a></li><li><a href="#sources">资料来源</a></li></ol></div>
+
+<h2 id="answer">1. 先回答三个最容易混淆的问题</h2>
+<h3>1.1 这款保险是什么</h3>
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>本案例能确认的内容</th><th>证据边界</th></tr></thead><tbody><tr><td>销售名称</td><td>定海柱8号定期寿险（互联网）</td><td>页面披露名</td></tr><tr><td>备案名称</td><td>国富人寿齐家骏达2026定期寿险（互联网）</td><td>页面投保须知</td></tr><tr><td>承保机构</td><td>国富人寿保险股份有限公司</td><td>页面投保须知</td></tr><tr><td>销售机构</td><td>慧择保险经纪有限公司</td><td>页面重要提示</td></tr><tr><td>页面产品标识</td><td><code>prodId=104154</code></td><td>URL 参数</td></tr><tr><td>页面计划标识</td><td><code>planId=108801</code></td><td>URL 参数</td></tr><tr><td>计划名称字段</td><td>抓取数据中 <code>planName</code> 为空</td><td>不能据此推导官方名称</td></tr><tr><td>公开计划清单</td><td>当前链接只验证到计划标识 108801</td><td>不能据此断言全产品只有一个计划</td></tr></tbody></table></div>
+<p>面试时可以这样说：我用慧择页面上的定海柱8号定期寿险做产品库拆解。公开链接能确认产品和页面标识，页面没有给出可供我确认的完整计划名称清单，所以我把 108801 称为本链接对应的销售页计划标识，把责任选择和投保输入作为该页面的配置状态来分析。</p>
+<h3>1.2 “计划有哪些”怎样回答</h3>
+<ol><li><strong>公开事实层：</strong>本链接能确认页面计划标识 108801，完整官方计划列表未公开。</li><li><strong>用户选择层：</strong>用户填写期间、交费期间、保额、职业等输入，并对可选责任做“含”或“不含”的选择。</li><li><strong>产品库设计层：</strong>系统可以把允许的责任组合存为计划，也可以把计划作为责任组合模板，再把年龄、期间和保额作为方案参数。</li></ol>
+<p>下面的组合名是教学名：组合 A 为基本责任且可选责任全不含，组合 B 加猝死额外赔，组合 C 加 45 岁前特别关爱金，组合 D 加交通意外三项，组合 E 加家庭守护责任。它们帮助练习数据建模，不能当作官方计划名。</p>
+<h3>1.3 产品库管理什么</h3>
+<div class="table-wrap"><table><thead><tr><th>业务概念</th><th>后台设计</th><th>技术协作</th></tr></thead><tbody><tr><td>产品卖什么</td><td>产品主档、销售名、备案名、承保机构</td><td>主键、外部编码、状态、权限</td></tr><tr><td>什么情况给什么钱</td><td>责任、触发条件、给付比例、除外关联</td><td>责任编码、规则表达式、展示文案</td></tr><tr><td>谁能申请、哪些组合可选、最终是否承保</td><td>投保资格或组合规则、核保规则、渠道规则</td><td>规则服务、校验接口、错误码</td></tr><tr><td>输入怎样变成价格</td><td>费率表、费率因子、报价服务</td><td>请求字段、精度、币种、追踪号</td></tr><tr><td>哪套资料有效</td><td>版本、审批、发布、生效、停售</td><td>版本号、有效时间、审计日志</td></tr><tr><td>页面怎样使用资料</td><td>详情、报价、投保、计划书和服务配置</td><td>多类消费 API 和数据分发</td></tr></tbody></table></div>
+
+<h2 id="map">2. 一张总图：从条款到消费端</h2>
+<p>产品库可以用四层模型理解：条款层、责任层、费率层、现价或利益层。投保规则和核保规则横向贯穿四层，版本和渠道决定一份配置是否可消费。</p>
+<div class="diagram"><div class="flow"><div class="box gold">条款与产品资料</div><div class="arrow">→</div><div class="box">责任层<br>基本与可选责任</div><div class="arrow">→</div><div class="box">费率层<br>年龄、期间、保额、职业</div><div class="arrow">→</div><div class="box green">详情、报价、投保</div></div><div class="flow" style="margin-top:12px"><div class="box gold">投保资格或组合规则</div><div class="arrow">↔</div><div class="box gold">核保规则</div><div class="arrow">→</div><div class="box green">计划书、保单、保全、理赔</div></div><p class="small">投保资格或组合规则校验能否申请和怎样组合，核保规则基于告知和风险信息决定承保条件。版本和渠道上下文贯穿每次选择。</p></div>
+<pre>条款和产品资料
+      ↓ 拆字段、拆责任、记录来源
+产品、计划、责任、规则、费率、版本
+      ↓ 按渠道和生效时间选择有效配置
+详情页 / 对比页 / 报价器 / 投保页 / 计划书
+      ↓ 请求报价、核保和承保服务
+报价结果 / 投保结果 / 电子保单
+      ↓ 按合同成立时的约定提供后续服务
+保全、理赔、客户服务</pre>
+
+<h2 id="benefit">3. 定海柱8号的公开责任拆解</h2>
+<p>责任名称和比例以产品页和正式条款为依据。正式合同、电子投保书和当时有效的产品文件具有更高的解释优先级。</p>
+<div class="table-wrap"><table><thead><tr><th>责任</th><th>内容</th><th>比例或关键条件</th><th>产品库落点</th></tr></thead><tbody><tr><td>基本责任</td><td>身故或全残</td><td>等待期内非意外原因按条款处理已交保费；意外或等待期后按基本保险金额给付</td><td>触发条件、等待期、给付金额、身故与全残互斥</td></tr><tr><td>责任一</td><td>猝死额外赔</td><td>基本保险金额的 30%，时间和定义按条款</td><td>责任编码、给付比例、适用期间、定义引用</td></tr><tr><td>责任二</td><td>身故或全残特别关爱金</td><td>基本保险金额的 50%；页面提示 45 周岁及以上不能选</td><td>年龄上限、时间窗、组合限制</td></tr><tr><td>责任三</td><td>陆路或水路公共交通、航空、法定节假日驾车</td><td>分别为 100%、400%、50%；三项需一起选，具体叠加以条款为准</td><td>责任组、必选关系、事故类型、比例</td></tr><tr><td>责任四</td><td>家庭守护身故或全残关爱金</td><td>基本保险金额的 100%；同一事故，条款约定 180 日等条件</td><td>家庭关系、同一事故、时间窗口</td></tr></tbody></table></div>
+<p>页面摘要适合做入口文案，后台要追溯到责任编码和条款引用。假设输入 30 周岁、50 万基本保额、20 年保障、20 年交、选择责任一和责任二，这只是教学请求，保费未知，也没有证明该组合作为官方计划存在。</p>
+<pre>产品：定海柱8号定期寿险（互联网）
+页面计划标识：108801
+基本参数：年龄 30，保额 500000，保障 20 年，交费 20 年，职业待填写
+责任：基本责任含，责任一含，责任二含，责任三和责任四不含
+报价：调用有效费率资料或授权报价服务</pre>
+<h3>具体金额推演框</h3>
+<p>下面用 50 万元基本保险金额做教学推演。它帮助理解责任比例怎样映射到金额，不代表某个官方计划的承保结果。</p>
+<div class="table-wrap"><table><thead><tr><th>情形</th><th>计算</th><th>教学理解</th></tr></thead><tbody><tr><td>符合条件的身故或全残基本责任</td><td>50 万 × 100%</td><td>基本给付 50 万元</td></tr><tr><td>等待期后满足猝死定义，且选择责任一</td><td>50 万 × 30%</td><td>猝死额外给付 15 万元</td></tr><tr><td>同时满足责任二年龄和事故条件，且选择责任二</td><td>50 万 × 50%</td><td>特别关爱额外给付 25 万元</td></tr><tr><td>选择责任三航空责任并满足事故条件</td><td>50 万 × 400%</td><td>航空额外给付 200 万元</td></tr><tr><td>基本责任与航空责任同时满足</td><td>50 万 + 200 万</td><td>按合同约定可能合计 250 万元</td></tr></tbody></table></div>
+<p>每一行都要回到条款核对事故定义、等待期、时间窗口和责任给付关系。交通三项在条款约定下只给付其中一项，不能把三项比例直接相加。责任一和责任二能否在同一事故中同时给付，也要逐项核对，不能概括为一律累计。</p>
+<h3>字段命名的坑：<code>fullPremium</code> 不一定是保费</h3>
+<p>公开页面 HTML 的 <code>protectTrialItemList.fullPremium</code> 出现过“10万元/3万元”这样的值。结合页面上下文，这些值看起来更像展示保额或责任金额，不能因为字段名带有 <code>Premium</code> 就直接当作保费。PM 应要求正式字段协议，确认字段含义、单位、币种、格式和来源后再映射到产品库。</p>
+
+<h2 id="rules">4. 投保输入与规则决策表</h2>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>页面公开信息</th><th>需要确认</th></tr></thead><tbody><tr><td>年龄</td><td>18 至 60 周岁，含边界</td><td>按投保日、生日还是生效日计算</td></tr><tr><td>保险期间</td><td>10、20、30 年，或至 60、65、70 周岁</td><td>与年龄、交费期和责任的组合关系</td></tr><tr><td>交费期间</td><td>一次交清、10、20、30 年，或交至 60、65、70 周岁</td><td>交至某年龄时的年数计算</td></tr><tr><td>基本保额</td><td>最低 10 万元，超过部分为 10 万元整数倍</td><td>人身险风险保额累计限制</td></tr><tr><td>职业</td><td>支持 1 至 6 类；5 类不超过 50 万，6 类不超过 30 万</td><td>职业映射表、特殊职业和累计口径</td></tr><tr><td>责任二</td><td>45 周岁及以上不能选择</td><td>45 岁当天的计算口径</td></tr><tr><td>投被保险人关系</td><td>本人、配偶、父母、子女</td><td>关系证明和家庭守护条件</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>规则</th><th>条件</th><th>结果</th><th>边界样例</th></tr></thead><tbody><tr><td>R1</td><td>年龄小于 18 或大于 60</td><td>阻止报价或投保</td><td>17、18、60、61</td></tr><tr><td>R2</td><td>保额小于 10 万或不是 10 万整数倍</td><td>阻止报价或投保</td><td>9.9 万、10 万、20 万；15 万单独验证金额步长</td></tr><tr><td>R3</td><td>职业 5 类且累计保额大于 50 万</td><td>阻止该金额方案</td><td>40 万、50 万、60 万</td></tr><tr><td>R4</td><td>职业 6 类且累计保额大于 30 万</td><td>阻止该金额方案</td><td>20 万、30 万、40 万</td></tr><tr><td>R5</td><td>年龄大于等于 45 且选择责任二</td><td>清除或阻止，交互需产品确认</td><td>44 岁、45 岁、46 岁</td></tr><tr><td>R6</td><td>交通意外三项未同时选</td><td>阻止提交并提示组合要求</td><td>选一项、选两项、全选</td></tr><tr><td>R7</td><td>家庭守护缺少配偶信息</td><td>进入补充资料或阻止</td><td>无配偶、关系不符</td></tr><tr><td>R8</td><td>命中健康告知或核保规则</td><td>转智能核保、人工核保或拒保</td><td>正常、补充问询、拒保</td></tr></tbody></table></div>
+
+<h2 id="quote">5. 费率与报价</h2>
+<p>公开页面提供费率表入口。本文不填写示例保费，保费金额需要使用有效费率资料或授权报价服务确认。报价口径还要考虑费率因子、责任组合、职业、地区、渠道适用范围及获授权的报价口径。PM 的任务是把输入、版本、精度、错误码和输出口径写清楚。</p>
+<pre>{
+  "productId": "104154",
+  "planId": "108801",
+  "version": "示例版本，待系统确认",
+  "insuredAge": 30,
+  "basicSumInsured": 500000,
+  "policyTerm": "20年",
+  "paymentTerm": "20年交",
+  "occupationClass": "待填写",
+  "optionalBenefits": ["OPTIONAL_01", "OPTIONAL_02"],
+  "channel": "huize_web"
+}</pre>
+<ol><li>先校验年龄、保额、职业和责任组合。</li><li>确认报价服务使用的产品、计划、费率版本和渠道。</li><li>用固定样例核对金额精度、四舍五入和错误码。</li><li>只改变一个因子后重新报价，观察结果是否符合预期。</li><li>把页面、报价、计划书和投保请求逐项对账。</li></ol>
+
+<h2 id="library">6. 产品库的完整设计</h2>
+<div class="diagram"><div class="flow"><div class="box gold">产品 Product</div><div class="arrow">→</div><div class="box">计划 Plan<br>108801</div><div class="arrow">→</div><div class="box">基本与可选责任</div><div class="arrow">→</div><div class="box green">页面、报价、投保</div></div><div class="flow" style="margin-top:12px"><div class="box">条款与内容</div><div class="box">投保资格或组合规则</div><div class="box">核保规则</div><div class="box">费率与报价</div><div class="box">版本、渠道、发布</div></div></div>
+<p>“计划”可以是独立实体，也可以是责任组合模板。是否把每种责任组合建成独立计划，必须查看目标系统数据模型或向负责同学确认。</p>
+<h3>后台模块</h3>
+<div class="table-wrap"><table><thead><tr><th>模块</th><th>设计重点</th><th>本案例练习</th></tr></thead><tbody><tr><td>产品主档</td><td>名称、备案、承保、险种、外部标识</td><td>销售名与备案名分开</td></tr><tr><td>计划管理</td><td>标识、责任组合、参数、渠道</td><td>记录 108801，标注计划名称未公开</td></tr><tr><td>责任管理</td><td>编码、触发、金额比例、条款引用</td><td>基本责任和四组可选责任</td></tr><tr><td>条款资料</td><td>文档、版本、章节、来源、生效日</td><td>关联正式条款 PDF</td></tr><tr><td>投保资格或组合规则</td><td>申请条件、组合逻辑、优先级、错误码</td><td>年龄、保额、职业和责任组合</td></tr><tr><td>核保规则</td><td>告知、风险评估、承保条件和核保结论</td><td>正常、问询、人工核保、拒保</td></tr><tr><td>费率报价</td><td>因子、费率文件、服务地址、精度</td><td>不录未经授权的示例保费</td></tr><tr><td>生命周期</td><td>草稿、审核、发布、生效、停售</td><td>改版保留旧依据</td></tr><tr><td>分发监控</td><td>消费端状态、同步结果、告警</td><td>请求版本与接收结果对账</td></tr><tr><td>审计权限</td><td>操作人、时间、差异、审批意见</td><td>追溯年龄边界和责任比例修改</td></tr></tbody></table></div>
+<h3>资料到产品库的流程</h3>
+<pre>资料获取
+  ↓ 条款、产品说明书、投保须知、费率表、风险保额表
+字段拆解
+  ↓ 产品、计划、责任、规则、价格因子、内容和版本
+录入与映射
+  ↓ 建内部编码，关联外部产品标识和原始资料
+复核
+  ↓ 格式、组合逻辑、条款展示一致性、权威底稿
+审批与发布
+  ↓ 生效时间、渠道范围、版本状态和分发任务
+消费端对账
+  ↓ 详情、对比、报价、投保、计划书、保单服务、理赔</pre>
+<div class="table-wrap"><table><thead><tr><th>校验类型</th><th>例子</th><th>发现的问题</th></tr></thead><tbody><tr><td>格式</td><td>保额为 10 万整数倍，年龄为合法数字</td><td>字段类型或输入错误</td></tr><tr><td>组合逻辑</td><td>交通意外三项同时选，45 岁以上不能选责任二</td><td>依赖和边界错误</td></tr><tr><td>条款与展示一致性</td><td>页面 30% 与责任配置、条款引用一致</td><td>文案与合同口径不一致</td></tr><tr><td>权威底稿核对</td><td>报价、现价或利益演示与有效底稿比对</td><td>数据、计算或版本错误</td></tr></tbody></table></div>
+<h3>版本与快照</h3>
+<p>版本选择要考虑业务生效时间、渠道、地区和投保上下文。要记录新版本何时可展示、可报价和可投保，以及已承保保单后续服务和理赔依据哪份合同资料。具体锁定规则需要平台与保司共同确认，不能把固定审批步数、在途锁定方式或旧单读取方式当作行业必然规则。</p>
+
+<h2 id="ownership">7. 保司产品工厂与经纪平台的分工</h2>
+<div class="table-wrap"><table><thead><tr><th>维度</th><th>保司产品工厂</th><th>经纪平台或销售平台产品库</th></tr></thead><tbody><tr><td>权威来源</td><td>备案资料、条款、费率、核保、保全、理赔</td><td>经授权接收的产品资料和销售服务配置</td></tr><tr><td>责任边界</td><td>承保责任、合同规则、核心保单处理</td><td>展示、筛选、报价接入、投保服务和客户协助</td></tr><tr><td>价格</td><td>费率制定或授权报价能力</td><td>调用报价服务并展示结果</td></tr><tr><td>版本</td><td>正式生效与历史合同依据</td><td>消费版本、同步状态、页面内容版本</td></tr><tr><td>出险处理</td><td>按合同审核与给付</td><td>报案、资料协助、进度同步</td></tr></tbody></table></div>
+<p>中邮保险产品工厂采购公告公开列举产品定义、计划、改版、销售控制、规则库、核保、保全、理赔、风险保额、发布和数据分发等能力。IBM Product Model 与 Guidewire Product Editions 可作为通用建模参考，不能直接推断本案例平台的实现。</p>
+
+<h2 id="pm">8. PM 后台页面如何设计</h2>
+<p>产品详情页可以分为基础信息、计划与责任、规则与报价、版本与发布四个区块。责任编辑页至少保存责任编码、展示名、触发条件、给付公式、等待期、互斥关系和条款章节。规则编辑页至少保存条件、动作、优先级、错误码、提示文案和资料来源。</p>
+<pre>{
+  "ruleCode": "AGE_OPTIONAL_02",
+  "when": "insuredAge >= 45 && optionalBenefit02 == true",
+  "action": "BLOCK_SUBMIT",
+  "errorCode": "OPTIONAL_02_AGE_NOT_ELIGIBLE",
+  "message": "45周岁及以上不能选择可选责任二",
+  "priority": 100
+}</pre>
+<p class="small">这段 JSON 是教学示例。实际系统可能使用规则引擎、表格规则、脚本或保司接口。PM 要把业务条件、动作、接口返回和测试样例写清楚。</p>
+
+<h2 id="case">9. 从页面到保单的完整案例演练</h2>
+<div class="table-wrap"><table><thead><tr><th>阶段</th><th>PM 要做什么</th><th>协作方</th><th>交付物</th></tr></thead><tbody><tr><td>资料获取</td><td>收集条款、须知、费率、风险保额和页面内容</td><td>保司产品、运营、合规</td><td>资料清单和来源表</td></tr><tr><td>字段拆解</td><td>拆产品、计划、责任、规则、内容</td><td>业务专家、研发</td><td>字段字典和责任映射</td></tr><tr><td>录入映射</td><td>建立内部编码，关联 104154 和 108801</td><td>产品库研发、数据同学</td><td>配置草稿</td></tr><tr><td>复核联调</td><td>做四类校验，核对报价和投保请求</td><td>测试、接口、合规</td><td>问题清单和联调记录</td></tr><tr><td>审批发布</td><td>确认版本、生效、渠道和发布范围</td><td>运营、合规、发布负责人</td><td>发布单和回滚方案</td></tr><tr><td>上线对账</td><td>对比页面、报价、投保和保单结果</td><td>客服、运营、研发</td><td>上线观察表</td></tr></tbody></table></div>
+<pre>用户进入详情页
+  → 读取产品 104154、计划 108801 的有效内容
+  → 选择期间、交费期、保额和责任组合
+  → 前端做格式和组合校验
+  → 报价服务读取年龄、保额、期间、职业、责任和渠道
+  → 返回金额、责任摘要、规则结果和追踪号
+  → 投保接口再次校验关键规则
+  → 核保通过后进入承保和电子保单
+  → 保单服务与理赔按合同成立时的有效依据处理</pre>
+
+<h2 id="incidents">10. 三个实际工作场景练习</h2>
+<h3>场景一：页面写了 30%，报价或计划书显示另一比例</h3><p><strong>发现：</strong>详情页责任一显示 30%，计划书或报价响应显示另一比例。<strong>定位：</strong>比较责任编码、给付比例、条款引用和版本，检查内容、报价响应和计划书模板是否读取同一版本。<strong>处理：</strong>让产品、保司接口、研发、测试和合规确认权威底稿。<strong>回归：</strong>覆盖默认不含、含责任一、修改保额、生成计划书、重新打开历史报价。</p>
+<h3>场景二：45 岁用户仍能选责任二</h3><p><strong>发现：</strong>前端允许选择，提交后接口拒绝，或接口成功但摘要没有该责任。<strong>定位：</strong>核对年龄计算时点、边界、前端规则版本、接口版本和错误码。<strong>处理：</strong>统一规则来源，明确清除选项或阻止提交。<strong>回归：</strong>测试 44 岁、45 岁、46 岁的页面、报价、投保和日志。此处是模拟案例。</p>
+<h3>场景三：新版条款发布后旧页面仍生成旧报价</h3><p><strong>发现：</strong>资料已经更新，历史链接和新页面的责任或规则不一致。<strong>定位：</strong>查询产品版本、业务生效时间、渠道、请求时间和分发状态。<strong>处理：</strong>明确新旧版本范围，停止错误分发，补发正确配置，保留历史依据。<strong>回归：</strong>覆盖旧版有效时间、新版有效时间、不同渠道和在途报价。</p>
+
+<h2 id="quiz">11. 练习与答案</h2>
+<h3>练习 1：用三句话回答“计划有哪些”</h3><p class="facts"><strong>参考：</strong>公开链接能确认页面计划标识 108801，页面数据未提供可确认的计划名称清单。责任选择和投保输入会组成一次报价与投保方案。教学中可以把责任组合建成计划示例，不能把组合名称说成官方计划。</p>
+<h3>练习 2：为什么产品、计划、责任要分开</h3><p class="facts"><strong>参考：</strong>产品回答整体是什么，计划回答销售组合如何组织，责任回答发生什么情况给什么保障。分开后，多个页面和渠道可以复用责任，变更时也能定位影响范围。</p>
+<h3>练习 3：一次报价至少需要什么字段</h3><p class="facts"><strong>参考：</strong>产品和计划标识、年龄、基本保额、保险期间、交费期间、职业、责任选择、渠道、报价时间和有效版本。实际系统还可能需要地区、健康告知、支付频率等字段。</p>
+<h3>练习 4：页面和条款不一致先做什么</h3><p class="facts"><strong>参考：</strong>保留页面、接口和条款版本证据，确认权威资料关系，再判断展示、规则、报价或分发环节的问题，最后用正常、边界和历史版本样例回归。</p>
+<h3>练习 5：怎样连接深蓝保经历</h3><p class="facts">我在深蓝保参与过年金试算或计划书相关需求，已确认范围是需求定义、联调和验收。那段经历让我关注输入字段、计算结果、页面展示和计划书口径是否一致。现在我用定海柱8号公开产品页练习从产品、计划、责任、规则和版本往下拆，并把公开案例分析与个人亲历分开表达。具体字段、合作方和故障细节，以需求文档和回忆确认后再补充。</p>
+
+<h2 id="glm">12. 与 GLM 0301 至 0306 的衔接和校正</h2>
+<div class="table-wrap"><table><thead><tr><th>教程</th><th>本文吸收</th><th>本文校正</th></tr></thead><tbody><tr><td>0300</td><td>业务概念、后台设计、技术协作三栏</td><td>用定海柱8号逐栏落地</td></tr><tr><td>0301</td><td>产品、计划、责任、规则、版本关系</td><td>增加条款、费率、内容和分发</td></tr><tr><td>0302</td><td>条款来源、责任编码、给付条件和互斥关系</td><td>用条款第 8 条核对基本与可选责任</td></tr><tr><td>0303</td><td>费率输入、报价服务、现价或利益层</td><td>定寿案例没有利益演示时，不强行套用现价示例</td></tr><tr><td>0304</td><td>年龄、职业、保额、责任组合和核保分支</td><td>边界、动作、错误码标为设计示例</td></tr><tr><td>0305</td><td>资料获取、四类校验、版本选择和消费端对账</td><td>不把固定审批、在途锁定或全量快照写成行业必然规则</td></tr><tr><td>0306</td><td>详情、对比、报价、投保、计划书、保单服务和理赔</td><td>不承诺接口必然同源、毫秒级返回或多端天然一致</td></tr></tbody></table></div>
+<ol><li>0300 PM 知识地图与真实产品导览</li><li>0301 没有产品库的世界与后台五概念</li><li>0302 条款层与责任层</li><li>0303 费率层与现价层</li><li>0304 险种差异与投保核保维</li><li>0305 录入校验治理与版本快照</li><li>0306 API 消费端联动与毕业串讲</li></ol>
+
+<h2 id="sources">13. 资料来源与事实边界</h2>
+<ol><li><a href="https://www.huize.com/apps/cps/index/product/detail?DProtectPlanId=108801&amp;prodId=104154&amp;planId=108801">慧择定海柱8号产品页</a></li><li><a href="https://files2.huizecdn.com/file3/M00/D6/5F/rBYA3GnKUXqAdLVQAAU4BAbXNV8711.pdf">国富人寿齐家骏达2026定期寿险条款 PDF</a></li><li><a href="https://www.chinapost.com.cn/html1/report/190685/8326-1.htm">中国邮政中邮保险产品工厂采购公告</a></li><li><a href="https://www.ibm.com/docs/en/ips/8.8.0.2?topic=components-product-model">IBM Product Model</a></li><li><a href="https://www.ibm.com/docs/en/ips/8.8.0.2?topic=model-defining-product-structure">IBM Product Structure</a></li><li><a href="https://docs.guidewire.com/cloud/apd/qusar/create/topics/c_editions.html">Guidewire Product Editions</a></li></ol>
+<p class="foot">案例页面和产品资料会更新。学习和面试前请重新打开页面，记录访问日期，并以投保时正式合同为准。配套 Markdown：<a href="01_定海柱8号产品库深度案例.md">产品库深度教学_定海柱8号案例.md</a>。</p>
+</main>
+</body>
+</html>

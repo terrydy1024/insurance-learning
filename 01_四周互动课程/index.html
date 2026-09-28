@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="保险产品库四周互动学习课程">
+  <link rel="icon" href="data:,">
+  <title>保险产品库四周互动课程</title>
+  <link rel="stylesheet" href="../../../90_内部材料_无需阅读/01_课程源码/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#lesson">跳到当前课程</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-mark" aria-hidden="true">保</span>
+        <div>
+          <p class="eyebrow">四周互动学习</p>
+          <h1 id="course-title">保险产品库</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="progress-summary" aria-live="polite">
+          <span class="progress-label">总体进度</span>
+          <strong id="progress-text">0 / 0 天</strong>
+          <span class="progress-track"><span id="progress-bar"></span></span>
+        </div>
+        <button class="button button-ghost" id="export-progress" type="button">导出学习记录</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="course-nav" aria-label="课程地图">
+        <div class="nav-heading">
+          <div>
+            <p class="eyebrow">学习地图</p>
+            <h2>四周路径</h2>
+          </div>
+          <button class="icon-button" id="reset-progress" type="button" title="清空本课程记录" aria-label="清空本课程记录">↺</button>
+        </div>
+        <div id="course-map" class="course-map"></div>
+        <div class="storage-note" id="storage-note" role="status"></div>
+      </aside>
+
+      <main id="lesson" class="lesson-area" tabindex="-1">
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon" aria-hidden="true">◎</div>
+          <h2>课程正在准备中</h2>
+          <p>请将 course-data.js 放在当前目录后重新打开本页。课程数据加载后，这里会显示 28 天学习内容。</p>
+        </div>
+        <article id="lesson-content" class="lesson-content" hidden></article>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="../../../90_内部材料_无需阅读/01_课程源码/course-data.js"></script>
+  <script src="../../../90_内部材料_无需阅读/01_课程源码/course-format.js"></script>
+  <script src="../../../90_内部材料_无需阅读/01_课程源码/lesson-enhancements.js"></script>
+  <script src="../../../90_内部材料_无需阅读/01_课程源码/app.js"></script>
+</body>
+</html>

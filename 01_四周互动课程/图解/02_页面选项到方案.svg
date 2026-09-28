@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="630" viewBox="0 0 1440 630" role="img" aria-labelledby="title desc">
+  <title id="title">定海柱8号：从页面选项到本次方案</title>
+  <desc id="desc">页面产品经四类可选范围汇入一次用户方案，之后校验规则并报价。</desc>
+  <rect width="1440" height="630" fill="#fff"/>
+  <text x="60" y="66" fill="#123047" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="28" font-weight="700">从页面实际可选内容，整理一份待校验的方案</text>
+  <text x="60" y="102" fill="#526579" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="17">公开页面事实 → 用户本次选择 → 规则与报价。教学示例的组合和金额结果仍需核对。</text>
+
+  <rect x="60" y="222" width="225" height="168" rx="16" fill="#eaf4ff" stroke="#5087b1" stroke-width="2"/>
+  <text x="84" y="270" fill="#123047" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" font-weight="700">定海柱8号</text>
+  <text x="84" y="304" fill="#294660" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">产品页与投保须知</text>
+  <text x="84" y="338" fill="#526579" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">先读用户看到的内容</text>
+
+  <path d="M285 306 H332" fill="none" stroke="#356884" stroke-width="3"/>
+  <polygon points="347,306 329,297 329,315" fill="#356884"/>
+  <text x="307" y="286" fill="#356884" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">核对</text>
+
+  <rect x="355" y="139" width="375" height="332" rx="16" fill="#f3f9f6" stroke="#48a280" stroke-width="2"/>
+  <text x="383" y="182" fill="#125b4a" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="22" font-weight="700">页面披露的可选范围</text>
+  <text x="383" y="222" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">保障期间：10/20/30年</text>
+  <text x="383" y="249" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">或保至60/65/70岁</text>
+  <text x="383" y="292" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">交费期间：一次交清、10/20/30年交</text>
+  <text x="383" y="319" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">或交至60/65/70岁</text>
+  <text x="383" y="361" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">基本保额：10万元起，按10万元递增</text>
+  <text x="383" y="403" fill="#25493e" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">可选责任：猝死关爱金等</text>
+  <text x="383" y="446" fill="#687e75" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">范围仍受年龄、职业与组合规则限制</text>
+
+  <path d="M730 306 H777" fill="none" stroke="#356884" stroke-width="3"/>
+  <polygon points="792,306 774,297 774,315" fill="#356884"/>
+  <text x="746" y="286" fill="#356884" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">选择</text>
+
+  <rect x="800" y="181" width="288" height="250" rx="16" fill="#fff7e9" stroke="#d3973d" stroke-width="2"/>
+  <text x="828" y="224" fill="#694516" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="22" font-weight="700">本次用户方案</text>
+  <text x="828" y="265" fill="#5a4a31" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">30岁 · 基本保额50万元</text>
+  <text x="828" y="307" fill="#5a4a31" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">保20年 · 20年交</text>
+  <text x="828" y="349" fill="#5a4a31" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="18">拟选猝死关爱金</text>
+  <text x="828" y="399" fill="#846947" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">教学输入，尚未确认可售</text>
+
+  <path d="M1088 306 H1135" fill="none" stroke="#356884" stroke-width="3"/>
+  <polygon points="1150,306 1132,297 1132,315" fill="#356884"/>
+  <text x="1103" y="286" fill="#356884" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="16">校验</text>
+
+  <rect x="1158" y="222" width="222" height="168" rx="16" fill="#f2edff" stroke="#8974ba" stroke-width="2"/>
+  <text x="1184" y="269" fill="#4d3a77" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="22" font-weight="700">规则与报价</text>
+  <text x="1184" y="307" fill="#594a74" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="17">年龄、职业、组合</text>
+  <text x="1184" y="344" fill="#594a74" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="17">有效费率或授权服务</text>
+
+  <text x="60" y="550" fill="#526579" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="17">进一步学习后台时，再讨论“计划”如何存储可销售组合；URL 标识只用于定位链接与排查数据。</text>
+</svg>
