@@ -17,7 +17,7 @@
     return formatter && formatter.escapeHtml ? formatter.escapeHtml(value) : String(value == null ? '' : value);
   }
 
-  function safeUrl(../../01_Codex_保险学习项目/01_从零入门/01_四周互动课程/url) {
+  function safeUrl(url) {
     var value = String(url || '').trim();
     if (!value) return '#';
     if (/^(https?:|file:)/i.test(value)) return value;
@@ -194,7 +194,7 @@
     var sources = Array.isArray(day.sources) ? day.sources : [];
     if (!sources.length) return '';
     return '<section class="lesson-card"><h3><span class="section-number">08</span>继续核对</h3><ul class="sources">' + sources.map(function (source) {
-      var url = safeUrl(../../01_Codex_保险学习项目/01_从零入门/01_四周互动课程/source.url);
+      var url = safeUrl(source.url);
       return '<li><a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label || source.url || '资料') + ' ↗</a></li>';
     }).join('') + '</ul></section>';
   }
@@ -253,14 +253,14 @@
   function exportProgress() {
     var payload = { exportedAt: new Date().toISOString(), course: data.title, records: state.records };
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-    var url = URL.createObjectURL(../../01_Codex_保险学习项目/01_从零入门/01_四周互动课程/blob);
+    var url = URL.createObjectURL(blob);
     var anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = '保险产品库学习记录.json';
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
-    window.setTimeout(function () { URL.revokeObjectURL(../../01_Codex_保险学习项目/01_从零入门/01_四周互动课程/url); }, 1000);
+    window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     showToast('学习记录已导出');
   }
 
