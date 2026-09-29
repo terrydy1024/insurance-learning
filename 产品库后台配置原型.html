@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="结构化产品库新产品接入教学演练原型">
+  <link rel="icon" href="data:,">
+  <title>产品库接入工作台 · 教学演练</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d2b3b;
+      --muted: #657589;
+      --line: #e2e8ee;
+      --surface: #ffffff;
+      --canvas: #f3f6f8;
+      --navy: #183c62;
+      --blue: #2169a7;
+      --blue-pale: #eaf3fb;
+      --green: #267454;
+      --green-pale: #e8f5ee;
+      --amber: #91621c;
+      --amber-pale: #fff4df;
+      --red: #a43b37;
+      --red-pale: #fff0ee;
+      --shadow: 0 10px 30px rgba(24, 48, 73, .055);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); font-size: 14px; line-height: 1.65; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--blue); }
+    :focus-visible { outline: 3px solid #f0b640; outline-offset: 2px; }
+    .topbar { min-height: 76px; padding: 14px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 13px; min-width: 0; }
+    .brand-mark { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 auto; border-radius: 12px; color: #fff; background: var(--navy); font-weight: 800; letter-spacing: .04em; }
+    .brand-title { margin: 0; font-size: 16px; line-height: 1.3; font-weight: 750; }
+    .brand-sub { color: var(--muted); font-size: 12px; }
+    .top-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+    .product-chip { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fbfcfd; font-size: 13px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #d39a31; }
+    .status-dot.good { background: #2e8b62; }
+    .status-dot.bad { background: #bd514b; }
+    .shell { max-width: 1500px; margin: 0 auto; padding: 22px; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; }
+    .sidebar { align-self: start; position: sticky; top: 18px; padding: 16px 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); }
+    .side-label { margin: 0 9px 10px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .step-nav { display: grid; gap: 4px; }
+    .step-link { width: 100%; border: 0; border-radius: 10px; background: transparent; padding: 9px 9px; display: grid; grid-template-columns: 27px minmax(0, 1fr) auto; align-items: center; gap: 9px; color: var(--ink); text-align: left; }
+    .step-link:hover { background: #f5f8fa; }
+    .step-link[aria-current="step"] { background: var(--blue-pale); color: var(--navy); font-weight: 700; }
+    .step-number { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: #edf1f4; color: #526578; font-size: 11px; font-weight: 800; }
+    .step-link[aria-current="step"] .step-number { background: var(--blue); color: #fff; }
+    .step-link.is-done .step-number { background: var(--green-pale); color: var(--green); }
+    .step-name { font-size: 12px; line-height: 1.35; }
+    .step-mark { min-width: 16px; color: var(--green); font-size: 13px; font-weight: 800; }
+    .side-foot { margin: 14px 8px 0; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    .workspace { min-width: 0; }
+    .notice { margin-bottom: 17px; padding: 14px 16px; border: 1px solid #d6e4ef; border-left: 4px solid var(--blue); border-radius: 12px; background: #f7fbfe; }
+    .notice h2 { margin: 0 0 5px; color: var(--navy); font-size: 14px; }
+    .notice p { margin: 4px 0 0; color: #4b6073; font-size: 12px; }
+    .notice strong { color: #253e58; }
+    .page-head { margin-bottom: 15px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+    .eyebrow { color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .page-head h1 { margin: 3px 0 0; font-size: clamp(20px, 2.5vw, 27px); line-height: 1.25; letter-spacing: -.025em; }
+    .page-desc { margin: 5px 0 0; max-width: 760px; color: var(--muted); font-size: 13px; }
+    .step-counter { flex: 0 0 auto; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: 12px; }
+    .content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 17px; align-items: start; }
+    .panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
+    .panel + .panel { margin-top: 14px; }
+    .panel-head { margin: 0 0 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .panel-head h2 { margin: 0; font-size: 15px; line-height: 1.45; }
+    .panel-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .subhead { margin: 20px 0 9px; font-size: 13px; font-weight: 750; }
+    .subhead:first-child { margin-top: 0; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+    .field { min-width: 0; }
+    .field.wide { grid-column: 1 / -1; }
+    .field label, .label-text { display: block; margin-bottom: 5px; color: #33485d; font-size: 12px; font-weight: 700; }
+    .field input, .field select, .field textarea, .doc-source, .doc-scope, .doc-status { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid #cfd9e1; border-radius: 8px; color: var(--ink); background: #fff; }
+    .field textarea { min-height: 82px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus, .doc-source:focus, .doc-scope:focus, .doc-status:focus { border-color: var(--blue); outline: 3px solid #dceeff; }
+    .hint { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .inline-note { margin: 12px 0; padding: 10px 12px; border-radius: 9px; color: #52667a; background: #f4f7f9; font-size: 12px; }
+    .inline-note.warning { color: var(--amber); background: var(--amber-pale); }
+    .inline-note.success { color: var(--green); background: var(--green-pale); }
+    .inline-note.error { color: var(--red); background: var(--red-pale); }
+    .inline-note strong { color: inherit; }
+    .doc-table-wrap { width: 100%; overflow-x: auto; }
+    .doc-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .doc-table th { padding: 8px 6px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11px; text-align: left; }
+    .doc-table td { padding: 9px 6px; border-bottom: 1px solid #edf1f4; vertical-align: top; }
+    .doc-kind { width: 118px; color: #33485d; font-size: 12px; font-weight: 700; }
+    .doc-table .col-source { width: 39%; }
+    .doc-table .col-scope { width: 22%; }
+    .doc-table .col-status { width: 24%; }
+    .doc-table .col-action { width: 54px; }
+    .doc-source, .doc-scope, .doc-status { padding: 7px 8px; font-size: 11px; }
+    .plain-button { border: 0; padding: 5px 7px; color: var(--red); background: transparent; font-size: 11px; font-weight: 700; }
+    .btn { min-height: 38px; padding: 8px 13px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #cbd6df; border-radius: 8px; background: #fff; color: #30475d; font-size: 12px; font-weight: 750; text-decoration: none; }
+    .btn:hover { background: #f5f8fa; }
+    .btn.primary { border-color: var(--blue); background: var(--blue); color: #fff; }
+    .btn.primary:hover { background: #15588f; }
+    .btn.danger { border-color: #eccac7; color: var(--red); background: #fff; }
+    .btn.small { min-height: 31px; padding: 5px 9px; font-size: 11px; }
+    .btn:disabled { opacity: .48; cursor: not-allowed; }
+    .button-row { margin-top: 14px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 13px; }
+    .plan-tabs { margin-bottom: 14px; display: flex; gap: 7px; flex-wrap: wrap; }
+    .plan-tab { border: 1px solid #d6dfe6; border-radius: 999px; padding: 7px 12px; background: #fff; color: #53687d; font-size: 12px; }
+    .plan-tab[aria-pressed="true"] { border-color: #8ab7dc; background: var(--blue-pale); color: var(--navy); font-weight: 750; }
+    .responsibility { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfd; }
+    .responsibility-title { margin: 0 0 8px; font-size: 12px; font-weight: 800; }
+    .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .check-card { padding: 10px 11px; display: flex; align-items: flex-start; gap: 9px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+    .check-card input { width: 16px; height: 16px; margin: 3px 0 0; accent-color: var(--blue); }
+    .check-card strong { display: block; font-size: 12px; }
+    .check-card span { display: block; color: var(--muted); font-size: 11px; }
+    .traffic-box { padding: 15px; border: 1px solid #cfdfed; border-radius: 12px; background: #f6faff; }
+    .traffic-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .traffic-head h3 { margin: 0; font-size: 14px; }
+    .switch { position: relative; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; color: #344b62; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .switch-ui { position: relative; width: 42px; height: 24px; border-radius: 999px; background: #aeb9c4; transition: background .16s; }
+    .switch-ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px #56687955; transition: transform .16s; }
+    .switch input:checked + .switch-ui { background: var(--blue); }
+    .switch input:checked + .switch-ui::after { transform: translateX(18px); }
+    .switch input:focus-visible + .switch-ui { outline: 3px solid #f0b640; outline-offset: 2px; }
+    .traffic-items { margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; list-style: none; }
+    .traffic-items li { padding: 8px; border-radius: 8px; background: #e9f2fb; color: #33506a; font-size: 11px; text-align: center; }
+    .traffic-items.is-hidden li { opacity: .55; text-decoration: line-through; }
+    .state-card { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfd; }
+    .state-line { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #edf1f4; font-size: 12px; }
+    .state-line:last-child { border-bottom: 0; }
+    .state-line span:first-child { color: var(--muted); }
+    .pill { padding: 3px 8px; display: inline-flex; align-items: center; border-radius: 999px; color: #576c80; background: #edf1f4; font-size: 10px; font-weight: 750; white-space: nowrap; }
+    .pill.good { color: var(--green); background: var(--green-pale); }
+    .pill.wait { color: var(--amber); background: var(--amber-pale); }
+    .pill.error { color: var(--red); background: var(--red-pale); }
+    .form-row { padding: 11px 0; display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1.4fr); align-items: center; gap: 12px; border-bottom: 1px solid #edf1f4; }
+    .form-row:last-child { border-bottom: 0; }
+    .row-label { font-size: 12px; font-weight: 700; }
+    .row-label small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .channel-preview { overflow: hidden; border: 1px solid #dce4eb; border-radius: 11px; }
+    .preview-top { padding: 9px 11px; background: #f3f6f8; color: var(--muted); font-size: 10px; }
+    .preview-body { padding: 14px; }
+    .preview-body h3 { margin: 0 0 5px; font-size: 15px; }
+    .preview-body p { margin: 6px 0; color: #516579; font-size: 11px; }
+    .preview-actions { margin-top: 12px; display: flex; gap: 7px; flex-wrap: wrap; }
+    .preview-actions span { padding: 5px 8px; border-radius: 7px; background: #eaf2f8; color: #37566e; font-size: 10px; }
+    .test-result { margin-top: 12px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: #f8fafb; color: #53687c; font-size: 12px; }
+    .test-result.good { border-color: #c9e4d4; background: var(--green-pale); color: var(--green); }
+    .test-result.bad { border-color: #efccc8; background: var(--red-pale); color: var(--red); }
+    .test-list { margin: 0; padding: 0; display: grid; gap: 7px; list-style: none; }
+    .test-list li { padding: 8px 10px; display: flex; justify-content: space-between; gap: 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 11px; }
+    .history-item { margin-top: 9px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfd; }
+    .history-item summary { cursor: pointer; color: #294662; font-size: 12px; font-weight: 800; }
+    .history-item p { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
+    .helper-rail { position: sticky; top: 18px; display: grid; gap: 14px; }
+    .helper-card { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+    .helper-card h2 { margin: 0 0 8px; font-size: 13px; }
+    .helper-card p { margin: 5px 0; color: var(--muted); font-size: 11px; }
+    .helper-card .key { color: var(--ink); font-weight: 750; }
+    .preview-mini { margin-top: 8px; padding: 12px; border-radius: 9px; background: #f4f7f9; }
+    .preview-mini strong { display: block; font-size: 12px; }
+    .preview-mini span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .helper-flow { display: grid; gap: 6px; }
+    .flow-line { display: flex; align-items: center; gap: 8px; color: #52677a; font-size: 11px; }
+    .flow-dot { width: 7px; height: 7px; border-radius: 50%; background: #b7c4cf; }
+    .flow-line.done .flow-dot { background: #39916a; }
+    .footer-actions { margin-top: 16px; padding: 13px 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); box-shadow: var(--shadow); }
+    .footer-actions .left { color: var(--muted); font-size: 11px; }
+    .footer-actions .right { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .toast { position: fixed; z-index: 20; right: 22px; bottom: 22px; max-width: min(440px, calc(100vw - 32px)); padding: 11px 15px; border-radius: 10px; background: #203b55; color: #fff; box-shadow: 0 10px 30px #172b3c44; font-size: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    @media (max-width: 1050px) {
+      .shell { grid-template-columns: 215px minmax(0, 1fr); padding: 16px; gap: 15px; }
+      .content-grid { grid-template-columns: minmax(0, 1fr); }
+      .helper-rail { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 700px) {
+      .topbar { padding: 12px 14px; align-items: flex-start; }
+      .brand-sub { display: none; }
+      .product-chip { font-size: 11px; }
+      .top-actions .btn { min-height: 34px; padding: 6px 8px; font-size: 11px; }
+      .shell { display: block; padding: 12px; }
+      .sidebar { position: static; margin-bottom: 13px; padding: 10px; }
+      .side-label, .side-foot { display: none; }
+      .step-nav { display: flex; overflow-x: auto; gap: 6px; padding-bottom: 3px; }
+      .step-link { flex: 0 0 138px; grid-template-columns: 24px minmax(0, 1fr) auto; padding: 7px; }
+      .step-number { width: 23px; height: 23px; }
+      .step-name { font-size: 11px; }
+      .page-head { align-items: flex-start; }
+      .step-counter { margin-top: 5px; }
+      .panel { padding: 15px; }
+      .helper-rail { grid-template-columns: minmax(0, 1fr); }
+      .fields, .split, .check-grid { grid-template-columns: minmax(0, 1fr); }
+      .traffic-items { grid-template-columns: minmax(0, 1fr); }
+      .form-row { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+      .footer-actions { align-items: flex-start; flex-direction: column; }
+      .footer-actions .right { width: 100%; justify-content: flex-start; }
+      .doc-table-wrap { overflow: visible; }
+      .doc-table, .doc-table tbody, .doc-table tr, .doc-table td { display: block; width: 100%; }
+      .doc-table thead { display: none; }
+      .doc-table tr { position: relative; padding: 9px 0; border-bottom: 1px solid var(--line); }
+      .doc-table td { padding: 4px 0; border: 0; }
+      .doc-kind { padding-right: 60px !important; }
+      .doc-table .col-action { position: absolute; top: 6px; right: 0; width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">库</div>
+      <div>
+        <p class="brand-title">结构化产品库接入工作台</p>
+        <div class="brand-sub">新产品接入 · 运营教学演练</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="product-chip" aria-live="polite"><span id="statusDot" class="status-dot"></span><strong id="headerProduct">达尔文12号重大疾病保险</strong><span id="headerVersion" class="pill">v1.0</span><span id="headerStatus" class="pill wait">草稿</span></div>
+      <button class="btn small" type="button" data-action="reset">重置演练</button>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar" aria-label="接入步骤">
+      <p class="side-label">接入流程</p>
+      <nav class="step-nav" id="stepNav"></nav>
+      <div class="side-foot">草稿会保存在当前浏览器。此原型不连接真实后台服务。</div>
+    </aside>
+    <main class="workspace">
+      <section class="notice" aria-labelledby="noticeTitle">
+        <h2 id="noticeTitle">教学设计与公开样本事实</h2>
+        <p><strong>教学设计：</strong>后台页面、岗位动作、状态流转、审核记录和报价联调均为本地模拟。演练占位资料不代表已取得授权文件，也不代表深蓝保真实后台。</p>
+        <p><strong>公开样本事实：</strong>达尔文12号页面列出保终身与保至70岁，中症按基本保额60%给付且限3次，轻症按基本保额30%给付且限4次。交通三项组合来自定海柱8号练习，属于另一款产品，不能混入达尔文12号合同。</p>
+        <p><strong>报价边界：</strong>只检查输入字段和来源状态，不显示保费，不调用或假设任何保司接口。</p>
+      </section>
+      <div id="stepRoot"></div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script>
+    "use strict";
+    const STORAGE_KEY = "product-library-onboarding-demo-v1";
+    const stepNames = [
+      "资料接入与核对", "产品主档", "计划与责任", "规则与销售范围",
+      "报价与利益来源", "页面内容与渠道", "预览、联调与验收", "审核、发布与改版",
+      "标签与分类体系", "对比与测评数据"
+    ];
+    const stepDescriptions = [
+      "登记产品页面与文件依据，标出缺口并留下复核动作。",
+      "把消费者看到的销售名与合同中的正式身份关联起来。",
+      "分别配置保障期间与核心责任，检查计划切换时的差异。",
+      "把销售边界和组合约束配置成前台可执行的规则。",
+      "登记权威报价来源和必要输入，只做字段校验。",
+      "核对页面摘要、条款入口和渠道按钮状态。",
+      "用同一组样例检查详情、报价状态和投保校验。",
+      "完成审核后发布演练版本，改版时保留已发布摘要。",
+      "【推荐侧】给已生效产品打人群、需求、健康、场景、公司五类标签，健康标签须业务复核。",
+      "【推荐侧】配置对比维度库与险种模板，配权重和评级，审核测评结论是否合规。"
+    ];
+    const initialState = {
+      current: 0,
+      status: "草稿",
+      version: "v1.0",
+      versionMajor: 1,
+      versionMinor: 0,
+      stepDone: [false, false, false, false, false, false, false, false, false, false],
+      hasUnpublishedEdits: false,
+      docs: [
+        { id: "salesPage", kind: "销售页面来源", source: "https://cps.qixin19.com/m/apps/cps/lyh1036126/product/detail?planId=130613&prodId=105149&tenantId=0", scope: "达尔文12号公开样本", status: "已确认（公开事实）", required: true },
+        { id: "contract", kind: "正式主险条款", source: "教学占位：正式接入时替换为获授权文件", scope: "产品与计划", status: "待复核", required: true },
+        { id: "riderContract", kind: "附加险条款（投保人豁免）", source: "教学占位：正式接入时替换为获授权文件", scope: "产品", status: "待复核", required: true },
+        { id: "spec", kind: "产品说明书", source: "教学占位：正式接入时替换为获授权文件", scope: "产品与计划", status: "待复核", required: true },
+        { id: "notice", kind: "投保须知", source: "教学占位：正式接入时替换为获授权文件", scope: "销售渠道", status: "待复核", required: true },
+        { id: "healthDoc", kind: "健康告知", source: "教学占位：正式接入时替换为获授权文件", scope: "产品", status: "待复核", required: true },
+        { id: "exclusion", kind: "免责说明", source: "教学占位：正式接入时替换为获授权文件", scope: "产品", status: "待复核", required: true },
+        { id: "quoteDoc", kind: "费率或报价资料", source: "尚未取得授权报价资料", scope: "本次产品版本", status: "待补", required: false }
+      ],
+      identity: {
+        saleName: "达尔文12号重大疾病保险",
+        formalName: "复星联合优选K重大疾病保险（互联网）",
+        insurer: "复星联合健康保险股份有限公司",
+        insuranceType: "重大疾病保险",
+        externalProductId: "105149",
+        externalPlanId: "130613",
+        supplyChannel: "齐欣",
+        channelProductCode: "",
+        supplyForm: "互联网专属",
+        platformId: "PL-DEMO-0001"
+      },
+      plans: {
+        life: {
+          name: "达尔文12号保终身",
+          planId: "130613",
+          duration: "终身",
+          paymentTerm: "30年交",
+          criticalPercent: "100",
+          middlePercent: "60",
+          middleLimit: "3",
+          mildPercent: "30",
+          mildLimit: "4",
+          deathRider: true,
+          cancerRider: true,
+          clauseBasis: "教学样本公开页面摘要，正式配置需回到对应条款章节"
+        },
+        age70: {
+          name: "达尔文12号保至70岁",
+          planId: "130614",
+          duration: "至70岁",
+          paymentTerm: "20年交",
+          criticalPercent: "100",
+          middlePercent: "60",
+          middleLimit: "3",
+          mildPercent: "30",
+          mildLimit: "4",
+          deathRider: true,
+          cancerRider: false,
+          clauseBasis: "教学样本公开页面摘要，正式配置需回到对应条款章节"
+        }
+      },
+      selectedPlan: "life",
+      rules: {
+        region: "全国（互联网产品）",
+        age: "保终身与保至70岁均为28天-55周岁；保至70岁投保年龄上限35周岁",
+        occupation: "1-4类职业可投",
+        channels: "经纪平台 Web 演练渠道",
+        sumMin: "10",
+        sumMax: "50",
+        sumStep: "5",
+        healthNotice: "仅问近2年内住院/手术/连续服药情况，以及近1年内检查异常且被医生建议进一步检查的情况；不问甲状腺结节、乳腺结节、乙肝携带",
+        trafficEnabled: false,
+        trafficPayload: "none"
+      },
+      quote: {
+        source: "service",
+        payFrequency: "年交",
+        validUntil: "30分钟",
+        age: true,
+        gender: true,
+        sumAssured: true,
+        duration: true,
+        paymentTerm: true,
+        responsibility: true,
+        channel: true,
+        version: true
+      },
+      page: {
+        summary: "中度疾病保险金，按基本保额60%给付，限3次；轻度疾病保险金，按基本保额30%给付，限4次。",
+        clauseLink: "正式文件链接待接入，当前仅用于教学预览",
+        channelWeb: true,
+        channelMobile: false,
+        show: true,
+        quote: true,
+        purchase: false
+      },
+      acceptance: {
+        status: "未开始",
+        selectedCase: "normal",
+        lastFeedback: "",
+        rows: []
+      },
+      tags: {
+        crowd: "青年成人",
+        company: "互联网保险公司",
+        level: "product",
+        demand: [],
+        health: [],
+        scene: [],
+        healthReviewed: false,
+        autoNote: "系统依据投保年龄自动推导「青年成人」，依据承保公司属性自动推导「互联网保险公司」。"
+      },
+      comparison: {
+        template: "重疾险",
+        dims: [],
+        crossCheck: false,
+        rating: "B",
+        conclusion: "",
+        conclusionReviewed: false,
+        bannedHit: ""
+      },
+      reviewNote: "请核对本次演练配置、责任摘要和验收记录。",
+      effectiveAt: "",
+      versions: [],
+      activeSnapshot: null
+    };
+    let state = loadState();
+    let toastTimer;
+
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return clone(initialState);
+        const parsed = JSON.parse(saved);
+        const merged = Object.assign(clone(initialState), parsed);
+        if (!Array.isArray(merged.stepDone)) merged.stepDone = clone(initialState.stepDone);
+        else while (merged.stepDone.length < initialState.stepDone.length) merged.stepDone.push(false);
+        ["supplyChannel", "channelProductCode", "supplyForm"].forEach(function (key) {
+          if (merged.identity[key] === undefined) merged.identity[key] = initialState.identity[key];
+        });
+        return merged;
+      } catch (error) {
+        return clone(initialState);
+      }
+    }
+    function persist() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch (error) { showToast("浏览器未能保存草稿，本次页面关闭后可能无法恢复。"); }
+    }
+    function escapeHTML(value) {
+      return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+      });
+    }
+    function getPath(path) {
+      return path.split(".").reduce(function (value, key) { return value == null ? undefined : value[key]; }, state);
+    }
+    function setPath(path, value) {
+      const keys = path.split(".");
+      const last = keys.pop();
+      const target = keys.reduce(function (object, key) { return object[key]; }, state);
+      target[last] = value;
+    }
+    function field(path, label, value, options) {
+      const opts = options || {};
+      const help = opts.help ? '<span class="hint">' + escapeHTML(opts.help) + '</span>' : "";
+      const wide = opts.wide ? " wide" : "";
+      const required = opts.required ? ' <span aria-hidden="true" style="color:#a43b37">*</span>' : "";
+      const type = opts.type || "text";
+      if (opts.select) {
+        const list = opts.select.map(function (item) {
+          const selected = String(value) === String(item.value) ? " selected" : "";
+          return '<option value="' + escapeHTML(item.value) + '"' + selected + '>' + escapeHTML(item.label) + "</option>";
+        }).join("");
+        return '<div class="field' + wide + '"><label for="' + escapeHTML(path) + '">' + escapeHTML(label) + required + '</label><select id="' + escapeHTML(path) + '" data-bind="' + escapeHTML(path) + '">' + list + "</select>" + help + "</div>";
+      }
+      if (opts.textarea) {
+        return '<div class="field' + wide + '"><label for="' + escapeHTML(path) + '">' + escapeHTML(label) + required + '</label><textarea id="' + escapeHTML(path) + '" data-bind="' + escapeHTML(path) + '">' + escapeHTML(value) + "</textarea>" + help + "</div>";
+      }
+      return '<div class="field' + wide + '"><label for="' + escapeHTML(path) + '">' + escapeHTML(label) + required + '</label><input id="' + escapeHTML(path) + '" data-bind="' + escapeHTML(path) + '" type="' + escapeHTML(type) + '" value="' + escapeHTML(value) + '"' + (opts.readonly ? " readonly" : "") + ">" + help + "</div>";
+    }
+    function checkbox(path, label, help) {
+      return '<label class="check-card"><input type="checkbox" data-bind="' + escapeHTML(path) + '"' + (getPath(path) ? " checked" : "") + '><span><strong>' + escapeHTML(label) + "</strong>" + (help ? "<span>" + escapeHTML(help) + "</span>" : "") + "</span></label>";
+    }
+    function pill(text, kind) { return '<span class="pill ' + (kind || "") + '">' + escapeHTML(text) + "</span>"; }
+    function panel(title, description, content, extraClass) {
+      return '<section class="panel ' + (extraClass || "") + '"><div class="panel-head"><div><h2>' + title + "</h2>" + (description ? "<p>" + description + "</p>" : "") + "</div></div>" + content + "</section>";
+    }
+    function showToast(message) {
+      const node = document.getElementById("toast");
+      node.textContent = message;
+      node.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { node.hidden = true; }, 3400);
+    }
+    function statusClass(text) {
+      if (/已生效|复测通过|已确认/.test(text)) return "good";
+      if (/阻断|失败|待补/.test(text)) return "error";
+      return "wait";
+    }
+    function renderNav() {
+      document.getElementById("stepNav").innerHTML = stepNames.map(function (name, index) {
+        const current = state.current === index;
+        const done = Boolean(state.stepDone[index]);
+        return '<button class="step-link ' + (done ? "is-done" : "") + '" type="button" data-action="goto" data-index="' + index + '"' + (current ? ' aria-current="step"' : "") + '><span class="step-number">' + (done ? "✓" : String(index + 1).padStart(2, "0")) + '</span><span class="step-name">' + escapeHTML(name) + '</span><span class="step-mark" aria-hidden="true">' + (done ? "●" : "") + "</span></button>";
+      }).join("");
+    }
+    function renderHeader() {
+      document.getElementById("headerProduct").textContent = state.identity.saleName || "未填写产品销售名";
+      document.getElementById("headerVersion").textContent = state.version;
+      let status = state.status;
+      if (state.hasUnpublishedEdits && state.activeSnapshot) status = "有改版草稿";
+      const statusNode = document.getElementById("headerStatus");
+      statusNode.textContent = status;
+      statusNode.className = "pill " + statusClass(status);
+      const dot = document.getElementById("statusDot");
+      dot.className = "status-dot" + (/已生效/.test(state.status) ? " good" : (/失败|阻断/.test(state.status) ? " bad" : ""));
+    }
+    function helperRail(index) {
+      const preview = '<div class="preview-mini"><strong>' + escapeHTML(state.identity.saleName || "待填写销售名") + '</strong><span>' + escapeHTML(state.identity.insurer || "承保公司待录入") + '</span><span>' + escapeHTML(state.plans[state.selectedPlan].duration || "保障期间待选") + " · " + escapeHTML(state.page.show ? "详情可展示" : "详情隐藏") + "</span><span>报价：" + escapeHTML(state.quote.source === "none" ? "来源未选择" : "字段校验，来源待调用") + "</span></div>";
+      const flow = stepNames.map(function (name, i) {
+        return '<div class="flow-line ' + (state.stepDone[i] ? "done" : "") + '"><span class="flow-dot"></span><span>' + String(i + 1).padStart(2, "0") + " · " + escapeHTML(name) + "</span></div>";
+      }).join("");
+      return '<aside class="helper-rail"><section class="helper-card"><h2>本步操作顺序</h2><p>先看业务说明，再填写配置，保存草稿后进入下一步。</p><div class="helper-flow">' + flow + '</div></section><section class="helper-card"><h2>前台预览摘要</h2><p>预览随当前草稿更新。正式接入时要用已复核文件和权威报价响应复核。</p>' + preview + '<p style="margin-top:10px"><span class="key">当前操作人：</span>产品运营演练账号</p></section><section class="helper-card"><h2>操作影响</h2><p>' + escapeHTML(stepDescriptions[index]) + '</p><p><span class="key">前台检查：</span>名称、方案、责任、条款来源和按钮状态需使用同一版本。</p></section></aside>';
+    }
+    function footerActions() {
+      const previous = state.current > 0 ? '<button class="btn" type="button" data-action="previous">上一步</button>' : "";
+      let nextLabel = "保存并进入下一步";
+      if (state.current === 6) nextLabel = "保存验收并进入审核发布";
+      else if (state.current === 7) nextLabel = "进入推荐侧：标签与分类体系";
+      else if (state.current === 8) nextLabel = "保存标签并进入对比测评";
+      const next = state.current < 9 ? '<button class="btn primary" type="button" data-action="continue"> ' + nextLabel + "</button>" : "";
+      return '<div class="footer-actions"><div class="left" id="stepFeedback" aria-live="polite">每步可先保存草稿。必填信息齐备并通过本步检查后，才能标记完成。</div><div class="right">' + previous + '<button class="btn" type="button" data-action="save">保存草稿</button>' + next + "</div></div>";
+    }
+    function docsStep() {
+      const rows = state.docs.map(function (doc, index) {
+        const required = doc.required ? "必填" : "选填";
+        return '<tr><td class="doc-kind">' + escapeHTML(doc.kind) + '<span class="hint">' + required + "</span></td><td class=\"col-source\"><input class=\"doc-source\" aria-label=\"" + escapeHTML(doc.kind) + "来源\" data-bind=\"docs." + index + ".source\" value=\"" + escapeHTML(doc.source) + '"></td><td class="col-scope"><input class="doc-scope" aria-label="' + escapeHTML(doc.kind) + "适用范围\" data-bind=\"docs." + index + ".scope\" value=\"" + escapeHTML(doc.scope) + '"></td><td class="col-status"><select class="doc-status" aria-label="' + escapeHTML(doc.kind) + "状态\" data-bind=\"docs." + index + '.status\"><option' + (doc.status === "待补" ? " selected" : "") + '>待补</option><option' + (doc.status === "待复核" ? " selected" : "") + '>待复核</option><option' + (doc.status.indexOf("已确认") === 0 ? " selected" : "") + '>已确认（演练）</option><option' + (doc.status === "已确认（公开事实）" ? " selected" : "") + '>已确认（公开事实）</option></select></td><td class="col-action"><button class="plain-button" type="button" data-action="remove-doc" data-index="' + index + '" aria-label="删除' + escapeHTML(doc.kind) + '">删除</button></td></tr>';
+      }).join("");
+      const body = '<p class="inline-note warning"><strong>演练资料说明：</strong>正式条款和投保须知当前为教学占位。实际接入需替换为获授权文件，再由保险业务复核人确认。</p><div class="doc-table-wrap"><table class="doc-table"><thead><tr><th>资料角色</th><th>来源记录</th><th>适用范围</th><th>资料状态</th><th>操作</th></tr></thead><tbody>' + rows + "</tbody></table></div><div class=\"button-row\"><button class=\"btn small\" type=\"button\" data-action=\"add-doc\">添加资料项</button><button class=\"btn small\" type=\"button\" data-action=\"review-docs\">模拟资料复核</button></div><div id=\"moduleFeedback\" aria-live=\"polite\"></div>";
+      return panel("资料清单", "运营登记来源、资料角色和适用范围，保险业务复核后才开放责任配置。", body);
+    }
+    function identityStep() {
+      const left = '<div class="fields">' +
+        field("identity.saleName", "销售名", state.identity.saleName, { required: true, help: "用于搜索结果、产品卡片与详情标题。" }) +
+        field("identity.formalName", "正式产品名", state.identity.formalName, { required: true, help: "教学样例文字，正式接入时须与条款首页逐字核对。" }) +
+        field("identity.insurer", "承保公司", state.identity.insurer, { required: true }) +
+        field("identity.insuranceType", "险种", state.identity.insuranceType, { required: true, select: [{ value: "重大疾病保险", label: "重大疾病保险" }, { value: "定期寿险", label: "定期寿险" }, { value: "年金保险", label: "年金保险" }, { value: "其他", label: "其他" }] }) +
+        field("identity.supplyChannel", "供货渠道", state.identity.supplyChannel, { required: true, select: [{ value: "齐欣", label: "齐欣" }, { value: "牛保", label: "牛保" }, { value: "i云保", label: "i云保" }, { value: "乐橙", label: "乐橙" }, { value: "易升", label: "易升" }, { value: "凤栖", label: "凤栖" }, { value: "专心", label: "专心" }, { value: "其他", label: "其他" }], help: "货从哪个上游接入（≠销售渠道，模块06配的是销售端）。" }) +
+        field("identity.channelProductCode", "渠道产品编码", state.identity.channelProductCode, { help: "选填。按渠道格式校验（齐欣 QX+12位，详见字典第8节）。" }) +
+        field("identity.externalProductId", "外部页面产品标识", state.identity.externalProductId, { required: true, help: "上游页面上的产品编号，仅作对照查询用。" }) +
+        field("identity.externalPlanId", "外部页面计划标识", state.identity.externalPlanId, { required: true }) +
+        field("identity.supplyForm", "产品供应形态", state.identity.supplyForm, { required: true, select: [{ value: "互联网专属", label: "互联网专属" }, { value: "经代产品", label: "经代产品" }], help: "经代产品不可按互联网产品上线销售。" }) +
+        field("identity.platformId", "平台产品标识", state.identity.platformId, { readonly: true, help: "演练用演示编号；正式环境由系统在保存时自动生成。" }) + "</div>";
+      const right = '<div class="state-card"><div class="state-line"><span>详情标题</span><strong id="identitySalePreview">' + escapeHTML(state.identity.saleName) + "</strong></div><div class=\"state-line\"><span>合同披露</span><strong id=\"identityFormalPreview\">" + escapeHTML(state.identity.formalName) + "</strong></div><div class=\"state-line\"><span>承保公司</span><strong id=\"identityInsurerPreview\">" + escapeHTML(state.identity.insurer) + "</strong></div><div class=\"state-line\"><span>供货渠道</span><strong id=\"identityChannelPreview\">" + escapeHTML(state.identity.supplyChannel || "—") + "</strong></div><div class=\"state-line\"><span>主档关联状态</span>" + pill(state.stepDone[0] ? "资料已复核" : "等待资料复核", state.stepDone[0] ? "good" : "wait") + "</div></div><p class=\"hint\">样本取自上游公开页面，页面上的编号（105149 / 130613）只用于对照查询；平台自己的产品编号由系统在录入时自动生成。</p>";
+      return panel("产品身份", "把用户识别用的销售名和合同披露身份明确关联。", '<div class="split"><div>' + left + '</div><div><h3 class="subhead">身份预览</h3>' + right + "</div></div>");
+    }
+    function planStep() {
+      const selected = state.plans[state.selectedPlan];
+      const tabs = '<div class="plan-tabs" role="group" aria-label="选择保障期间">' +
+        '<button class="plan-tab" type="button" data-action="select-plan" data-plan="life" aria-pressed="' + (state.selectedPlan === "life") + '">保终身</button>' +
+        '<button class="plan-tab" type="button" data-action="select-plan" data-plan="age70" aria-pressed="' + (state.selectedPlan === "age70") + '">保至70岁</button></div>';
+      const forms = '<div class="fields">' +
+        field("plans." + state.selectedPlan + ".name", "计划名称", selected.name, { required: true }) +
+        field("plans." + state.selectedPlan + ".planId", "计划编号（上游页面）", selected.planId, { required: true, help: "上游页面定位该计划的编号，保终身与保至70岁各不相同。" }) +
+        field("plans." + state.selectedPlan + ".duration", "保障期间", selected.duration, { required: true }) +
+        field("plans." + state.selectedPlan + ".paymentTerm", "交费期间", selected.paymentTerm, { required: true, help: "保至70岁版本最多20年交。" }) +
+        field("plans." + state.selectedPlan + ".criticalPercent", "首次重疾给付比例（%）", selected.criticalPercent, { type: "number", required: true, help: "意外导致的给付比例如有不同，回到条款核对。" }) +
+        field("plans." + state.selectedPlan + ".clauseBasis", "条款依据", selected.clauseBasis, { wide: true, required: true, textarea: true }) + "</div>";
+      const payout = '<div class="split"><div class="responsibility"><p class="responsibility-title">中度疾病保险金</p><div class="fields">' + field("plans." + state.selectedPlan + ".middlePercent", "基本保额比例（%）", selected.middlePercent, { type: "number", required: true }) + field("plans." + state.selectedPlan + ".middleLimit", "给付次数上限", selected.middleLimit, { type: "number", required: true }) + "</div></div><div class=\"responsibility\"><p class=\"responsibility-title\">轻度疾病保险金</p><div class=\"fields\">" + field("plans." + state.selectedPlan + ".mildPercent", "基本保额比例（%）", selected.mildPercent, { type: "number", required: true }) + field("plans." + state.selectedPlan + ".mildLimit", "给付次数上限", selected.mildLimit, { type: "number", required: true }) + "</div></div></div>";
+      const riders = '<h3 class="subhead">可选责任配置</h3><div class="check-grid">' +
+        checkbox("plans." + state.selectedPlan + ".deathRider", "身故或全残保险金", "两个计划均可选") +
+        (state.selectedPlan === "life"
+          ? checkbox("plans." + state.selectedPlan + ".cancerRider", "恶性肿瘤重度治疗津贴", "仅保终身计划可选")
+          : '<label class="check-card" style="opacity:.55"><input type="checkbox" disabled><span><strong>恶性肿瘤重度治疗津贴</strong><span>不可选——该责任仅保终身计划支持</span></span></label>') +
+        "</div>";
+      const note = '<p class="inline-note"><strong>计划切换检查：</strong>保终身和保至70岁各自保存责任配置，切计划时重点核对：交费期上限、可选责任的可用计划范围。公开页面能支持的样本事实只用于演练录入，正式比例、次数和交费期应回到对应条款确认。</p>';
+      return panel("计划与责任", "先建立保障期间，再关联必选或可选责任、给付规则和条款依据。", tabs + forms + '<h3 class="subhead">核心责任配置</h3>' + payout + riders + note);
+    }
+    function rulesStep() {
+      const payloadOptions = [
+        { value: "none", label: "三项全不选" },
+        { value: "all", label: "三项齐全" },
+        { value: "one", label: "只发送陆路或水路公共交通" },
+        { value: "two", label: "只发送其中两项" }
+      ];
+      const body = '<div class="fields">' +
+        field("rules.region", "销售地区", state.rules.region, { required: true }) +
+        field("rules.age", "投保年龄范围", state.rules.age, { required: true }) +
+        field("rules.occupation", "职业类别范围", state.rules.occupation, { required: true }) +
+        field("rules.channels", "适用渠道", state.rules.channels, { required: true }) +
+        field("rules.sumMin", "保额下限（万）", state.rules.sumMin, { required: true, type: "number" }) +
+        field("rules.sumMax", "保额上限（万）", state.rules.sumMax, { required: true, type: "number" }) +
+        field("rules.sumStep", "保额递增步长（万）", state.rules.sumStep, { required: true, type: "number" }) +
+        field("rules.healthNotice", "健康告知摘要", state.rules.healthNotice, { wide: true, required: true, textarea: true, help: "推荐侧「健康标签」的唯一依据；逐条列出问询项，不可照抄其他产品。" }) + "</div>" +
+        '<h3 class="subhead">独立组合练习：定海柱8号交通意外额外赔</h3><div class="traffic-box"><div class="traffic-head"><div><h3>一个前台开关联动三项</h3><div class="hint">此组合来自另一款产品的规则练习，不属于达尔文12号责任。</div></div><label class="switch"><span id="trafficSwitchText">' + (state.rules.trafficEnabled ? "已开启" : "未开启") + '</span><input type="checkbox" data-bind="rules.trafficEnabled" aria-label="交通意外额外赔三项组合开关"' + (state.rules.trafficEnabled ? " checked" : "") + '><span class="switch-ui" aria-hidden="true"></span></label></div><ul class="traffic-items ' + (state.rules.trafficEnabled ? "" : "is-hidden") + '"><li>陆路或水路公共交通</li><li>航空交通</li><li>法定节假日驾车</li></ul></div>' +
+        '<div class="form-row"><div class="row-label">模拟送往校验服务的组合' + "<small>前台仍只提供一个总开关</small></div><div><select id=\"trafficPayload\" data-bind=\"rules.trafficPayload\">" + payloadOptions.map(function (item) { return '<option value="' + item.value + '"' + (state.rules.trafficPayload === item.value ? " selected" : "") + ">" + item.label + "</option>"; }).join("") + '</select><button class="btn small" type="button" data-action="simulate-traffic" style="margin-left:8px">模拟校验</button></div></div><div id=\"trafficResult\" class=\"test-result\" aria-live=\"polite\">选择测试组合后运行校验。只送一项或两项会被明确拦截。</div>' +
+        '<p class="inline-note warning"><strong>规则结果：</strong>组合必须全有或全无。报价和投保前都要复核组合完整性，单项请求不能继续。</p>';
+      return panel("销售范围与组合规则", "设置渠道、人群依据和前台选择的约束，确保页面、报价与投保执行同一条规则。", body);
+    }
+    function quoteStep() {
+      const sources = [
+        { value: "none", label: "未选择来源" },
+        { value: "tariff", label: "授权费率资料（需获授权样本）" },
+        { value: "service", label: "授权报价服务（联调待接入）" }
+      ];
+      const inputs = '<div class="check-grid">' +
+        checkbox("quote.age", "年龄", "使用对应年龄口径") +
+        checkbox("quote.gender", "性别", "仅按正式资料要求") +
+        checkbox("quote.sumAssured", "基本保额", "与方案限制一致") +
+        checkbox("quote.duration", "保障期间", "匹配所选计划") +
+        checkbox("quote.paymentTerm", "交费期间", "匹配所选计划") +
+        checkbox("quote.responsibility", "责任组合", "包含用户当前选择") +
+        checkbox("quote.channel", "销售渠道", "匹配渠道规则") +
+        checkbox("quote.version", "产品版本", "固定本次规则版本") + "</div>";
+      const body = '<div class="fields">' + field("quote.source", "权威报价来源", state.quote.source, { required: true, select: sources, help: "选中来源只表示配置意向，当前页面不会连接真实资料或服务。" }) + field("quote.payFrequency", "支付频率", state.quote.payFrequency, { required: true, select: [{ value: "年交", label: "年交" }, { value: "半年交", label: "半年交" }, { value: "季交", label: "季交" }, { value: "月交", label: "月交" }, { value: "趸交", label: "趸交" }] }) + field("quote.validUntil", "报价有效期", state.quote.validUntil, { required: true, help: "超期后必须重新试算，防止用户用过期价格投保。" }) + field("quote.traceId", "对账记录", "每次试算应记录请求编号、所用版本与时间，供前后台对账", { readonly: true }) + "</div><h3 class=\"subhead\">报价必要输入</h3>" + inputs + '<div class="state-card" style="margin-top:14px"><div class="state-line"><span>请求字段检查</span><strong>校验通过后可继续联调</strong></div><div class="state-line"><span>权威来源调用</span>' + pill(state.quote.source === "none" ? "尚未选择" : "待调用", "wait") + '</div><div class="state-line"><span>报价金额</span><strong>本演练不生成</strong></div></div><p class="inline-note warning"><strong>操作边界：</strong>改动计划、责任、渠道或版本后应重新试算。只有取得授权费率或真实服务响应后，前台才可展示金额。</p>';
+      return panel("报价与利益来源", "登记报价来源和必需输入。页面只回报字段检查结果，不生成保费或收益金额。", body);
+    }
+    function pageStep() {
+      const channel = '<div class="check-grid">' + checkbox("page.channelWeb", "经纪平台 Web", "教学渠道") + checkbox("page.channelMobile", "移动端样例", "教学渠道") + "</div>";
+      const toggles = '<div class="check-grid">' + checkbox("page.show", "可展示详情", "控制详情入口") + checkbox("page.quote", "可试算", "当前只展示校验状态") + checkbox("page.purchase", "可投保", "发布审核后按渠道开放") + "</div>";
+      const preview = '<div class="channel-preview"><div class="preview-top">详情页模拟预览 · 当前草稿</div><div class="preview-body"><h3 id="pagePreviewTitle">' + escapeHTML(state.identity.saleName) + '</h3><p id="pagePreviewSummary">' + escapeHTML(state.page.summary) + '</p><p>承保公司：<span id="pagePreviewInsurer">' + escapeHTML(state.identity.insurer) + '</span></p><p>条款入口：' + escapeHTML(state.page.clauseLink) + '</p><div class="preview-actions"><span>' + (state.page.show ? "详情可展示" : "详情隐藏") + "</span><span>" + (state.page.quote ? "试算可见" : "试算关闭") + "</span><span>" + (state.page.purchase ? "投保开放" : "投保关闭") + "</span></div></div></div>";
+      const body = '<div class="split"><div><h3 class="subhead">页面内容</h3><div class="fields">' + field("page.summary", "责任摘要", state.page.summary, { wide: true, required: true, textarea: true, help: "内容应由已复核的结构化责任生成或逐字对账。" }) + field("page.clauseLink", "条款与须知链接", state.page.clauseLink, { wide: true, required: true }) + "</div><h3 class=\"subhead\">销售渠道</h3>" + channel + "<h3 class=\"subhead\">页面能力</h3>" + toggles + "</div><div><h3 class=\"subhead\">实时预览</h3>" + preview + "</div></div><p class=\"inline-note\">默认关闭投保。正式开放前要核对条款版本、渠道授权和验收结果。</p>";
+      return panel("页面内容与渠道", "让产品身份、责任摘要、资料链接和渠道按钮使用同一草稿版本。", body);
+    }
+    function acceptanceRows() {
+      if (!state.acceptance.rows.length) return '<p class="hint">尚无验收记录。先选样例运行，满足前置条件后再执行完整验收。</p>';
+      return '<ul class="test-list">' + state.acceptance.rows.map(function (row) {
+        return "<li><span>" + escapeHTML(row.label) + "</span>" + pill(row.result, row.pass ? "good" : "error") + "</li>";
+      }).join("") + "</ul>";
+    }
+    function acceptanceStep() {
+      const cases = [
+        { value: "normal", label: "正常样例：达尔文12号保终身" },
+        { value: "trafficNone", label: "交通练习：三项全不选" },
+        { value: "trafficAll", label: "交通练习：三项齐全" },
+        { value: "trafficOne", label: "交通练习：只发送一项" },
+        { value: "trafficTwo", label: "交通练习：只发送两项" }
+      ];
+      const body = '<div class="fields">' + field("acceptance.selectedCase", "测试样例", state.acceptance.selectedCase, { select: cases }) + '<div class="field"><span class="label-text">预期结果</span><div class="hint">正常产品展示通过字段检查，权威报价来源仍待调用。交通组合只接受三项全有或全无。</div></div></div><div class="button-row"><button class="btn" type="button" data-action="run-sample">运行当前样例</button><button class="btn primary" type="button" data-action="run-suite">运行完整验收</button></div><div id="sampleResult" class="test-result" aria-live="polite">' + escapeHTML(state.acceptance.lastFeedback || "运行样例后会显示可见结果和阻断原因。") + "</div><h3 class=\"subhead\">完整验收记录</h3>" + acceptanceRows() + '<div class="state-card" style="margin-top:12px"><div class="state-line"><span>验收结论</span>' + pill(state.acceptance.status, state.acceptance.status === "复测通过" ? "good" : "wait") + '</div><div class="state-line"><span>详情一致性</span><span>名称、责任摘要、正式资料入口</span></div><div class="state-line"><span>报价状态</span><span>字段可校验，来源待调用，不显示金额</span></div><div class="state-line"><span>投保校验</span><span>无效交通组合被阻止</span></div></div><p class="inline-note warning"><strong>验收说明：</strong>此处执行的是本地规则模拟，不连接报价或投保服务。完整验收通过只允许进入模拟审核。</p>';
+      return panel("预览、联调与验收", "用同一份草稿对账详情、报价状态和投保规则。验收通过是发起发布审核的前置条件。", body);
+    }
+    function historyMarkup() {
+      if (!state.versions.length) return '<p class="hint">暂无已发布版本摘要。首次批准发布后，这里会记录版本、责任与渠道摘要。</p>';
+      return state.versions.slice().reverse().map(function (version) {
+        return '<details class="history-item"><summary>' + escapeHTML(version.version) + " · " + escapeHTML(version.status) + " · " + escapeHTML(version.publishedAt) + "</summary><p><strong>产品：</strong>" + escapeHTML(version.saleName) + "，" + escapeHTML(version.insurer) + "</p><p><strong>方案：</strong>" + escapeHTML(version.planName) + "，保障" + escapeHTML(version.duration) + "</p><p><strong>责任摘要：</strong>" + escapeHTML(version.responsibilitySummary) + "</p><p><strong>渠道：</strong>" + escapeHTML(version.channels) + "</p><p><strong>验收：</strong>" + escapeHTML(version.acceptanceStatus) + "</p></details>";
+      }).join("");
+    }
+    function publishStep() {
+      const allDone = state.stepDone.slice(0, 7).every(Boolean);
+      const showRevision = state.activeSnapshot && state.hasUnpublishedEdits;
+      const body = '<div class="state-card"><div class="state-line"><span>当前版本</span><strong>' + escapeHTML(state.version) + "</strong></div><div class=\"state-line\"><span>当前状态</span>" + pill(state.hasUnpublishedEdits ? "有改版草稿" : state.status, statusClass(state.status)) + "</div><div class=\"state-line\"><span>前序模块</span>" + pill(allDone ? "接入侧前七步已完成" : "仍有模块未完成", allDone ? "good" : "wait") + "</div><div class=\"state-line\"><span>验收结论</span>" + pill(state.acceptance.status, state.acceptance.status === "复测通过" ? "good" : "wait") + "</div></div>" +
+        '<div class="fields" style="margin-top:14px">' + field("reviewNote", "审批意见", state.reviewNote, { wide: true, textarea: true, required: true }) + field("effectiveAt", "模拟生效时间", state.effectiveAt || new Date().toISOString().slice(0, 16), { type: "datetime-local", help: "仅记录本地演练状态，不会触发真实发布。" }) + field("page.channelWeb", "发布渠道摘要", state.page.channelWeb ? "经纪平台 Web 演练渠道" : "未选择 Web 渠道", { readonly: true }) + "</div>" +
+        '<div class="button-row"><button class="btn" type="button" data-action="submit-review">提交审核</button><button class="btn primary" type="button" data-action="approve-publish">批准并模拟发布</button>' + (showRevision ? '<button class="btn" type="button" data-action="new-revision">新建改版</button>' : "") + "</div><div id=\"publishFeedback\" aria-live=\"polite\"></div>" +
+        '<h3 class="subhead">版本历史摘要</h3><p class="hint">已批准的发布版本会保留身份、方案、责任摘要、渠道和验收结论。</p>' + historyMarkup() +
+        '<p class="inline-note warning"><strong>发布约束：</strong>资料缺失、任一模块未完成或验收失败时，发布动作会被拦截。改版重新走验收和审批。</p>';
+      return panel("审核、发布与改版", "审批动作与录入动作分别留痕。已生效内容发生编辑后，先新建改版并重新验收。", body);
+    }
+    function listChecks(path, options, selected, tone) {
+      const list = getPath(path) || [];
+      return '<div class="check-grid">' + options.map(function (opt) {
+        const on = list.indexOf(opt.value) >= 0;
+        return '<label class="check-card"><input type="checkbox" data-action="toggle-list" data-path="' + escapeHTML(path) + '" data-value="' + escapeHTML(opt.value) + '"' + (on ? " checked" : "") + '><span><strong>' + escapeHTML(opt.value) + "</strong><span>" + escapeHTML(opt.help || "") + "</span></span></label>";
+      }).join("") + "</div>" + (tone ? '<p class="inline-note ' + tone.kind + '"><strong>' + escapeHTML(tone.text) + "</strong></p>" : "");
+    }
+    function tagsStep() {
+      const t = state.tags;
+      const auto = '<div class="state-card"><div class="state-line"><span>系统自动推导</span><span>' + pill(t.crowd, "good") + pill(t.company, "good") + '</span></div><div class="state-line"><span>推导依据</span><strong style="font-weight:400;text-align:right">' + escapeHTML(t.autoNote) + "</strong></div></div>";
+      const basic = '<div class="fields">' +
+        field("tags.crowd", "人群标签", t.crowd, { select: [{ value: "少儿", label: "少儿" }, { value: "青年成人", label: "青年成人" }, { value: "中老年", label: "中老年" }, { value: "高龄老人", label: "高龄老人" }, { value: "家庭支柱", label: "家庭支柱" }], help: "「家庭支柱」是家庭角色不是年龄段，不能自动推导，需人工判断。" }) +
+        field("tags.company", "公司标签", t.company, { select: [{ value: "大公司品牌", label: "大公司品牌" }, { value: "互联网保险公司", label: "互联网保险公司" }, { value: "合资公司", label: "合资公司" }] }) +
+        field("tags.level", "标签挂在哪一层", t.level, { select: [{ value: "product", label: "产品级（大多数标签）" }, { value: "plan", label: "计划级（低保费、保证续保、多次赔付等跟方案有关的）" }], help: "挂错层级会让前台筛选结果不准：把「低保费」挂产品级，贵的方案也被打成低保费。" }) + "</div>";
+      const demand = listChecks("tags.demand", [
+        { value: "高保额", help: "保额上限 ≥ 50 万（阈值需统一，否则同一标签筛出的产品不一样）" },
+        { value: "低保费", help: "同类产品同年龄同性别费率处于后 30%" },
+        { value: "含身故", help: "含身故责任" },
+        { value: "多次赔付", help: "重疾多次给付（通常是可选责任）" },
+        { value: "癌症保障", help: "含恶性肿瘤额外赔或治疗津贴" },
+        { value: "保证续保", help: "医疗险，保证续保年限 ≥ 6 年" }
+      ], t.demand);
+      const health = listChecks("tags.health", [
+        { value: "核保宽松", help: "整体核保尺度宽松" },
+        { value: "支持智能核保", help: "有智能核保入口" },
+        { value: "非标体友好", help: "非标准体有较大概率承保" },
+        { value: "甲状腺结节可投", help: "健康告知支持甲状腺结节" },
+        { value: "三高可投", help: "高血压/高血糖/高血脂可投" }
+      ], t.health, { kind: "warning", text: "合规红线：健康标签最容易出问题。把不支持的产品打上「甲状腺结节可投」，非标体用户点进去投保被拒，就是误导销售。" });
+      const scene = listChecks("tags.scene", [
+        { value: "重疾保障", help: "" }, { value: "医疗报销", help: "" },
+        { value: "养老规划", help: "" }, { value: "财富传承", help: "" },
+        { value: "少儿教育金", help: "" }, { value: "预算1000内", help: "年交保费 < 1000 元" }
+      ], t.scene);
+      const review = '<div class="button-row"><button class="btn" type="button" data-action="review-health">提交健康标签业务复核</button></div><div class="state-card" style="margin-top:12px"><div class="state-line"><span>健康标签复核状态</span>' + pill(t.healthReviewed ? "业务复核人已确认" : "待复核（运营自己打的不算数）", t.healthReviewed ? "good" : "error") + '</div><div class="state-line"><span>已打健康标签</span><strong>' + (t.health.length ? escapeHTML(t.health.join("、")) : "无") + "</strong></div></div><div id=\"tagFeedback\" aria-live=\"polite\"></div>";
+      const preview = '<div class="channel-preview"><div class="preview-top">前台筛选预览 · 用户选「' + escapeHTML(t.health[0] || "（未打健康标签）") + ' + ' + escapeHTML(t.crowd) + '」</div><div class="preview-body"><h3>' + escapeHTML(state.identity.saleName || "待填写销售名") + '</h3><p>' + (t.health.length ? pill(t.health[0], "good") : '<span class="hint">未打健康标签，该筛选条件下前台不会展示本产品</span>') + pill(t.crowd) + pill(t.level === "plan" ? "计划级标签" : "产品级标签") + '</p><p class="hint">若标签打错，用户按条件筛出来却投保被拒，就是客诉。</p></div></div>';
+      const body = '<h3 class="subhead">系统自动推导的标签</h3>' + auto +
+        '<h3 class="subhead">基础标签（人工确认）</h3>' + basic +
+        '<h3 class="subhead">需求标签</h3>' + demand +
+        '<h3 class="subhead">健康标签</h3>' + health +
+        '<h3 class="subhead">场景标签</h3>' + scene +
+        '<h3 class="subhead">复核与前台预览</h3><div class="split"><div>' + review + '</div><div>' + preview + "</div></div>";
+      return panel("标签与分类体系", "产品发布生效后才能打标。这一步决定用户能不能筛到这款产品。", body);
+    }
+    function comparisonStep() {
+      const c = state.comparison;
+      const dimsByType = {
+        "重疾险": [
+          { value: "重疾赔付次数", help: "单位：次" }, { value: "中症比例/次数", help: "单位：% / 次" },
+          { value: "轻症比例/次数", help: "单位：% / 次" }, { value: "癌症额外赔", help: "有/无" },
+          { value: "身故责任", help: "有/无" }, { value: "标准体保费", help: "单位：元/年" },
+          { value: "核保宽松度", help: "评级" }
+        ],
+        "年金险": [
+          { value: "IRR", help: "单位：%" }, { value: "现金价值曲线", help: "单位：元" },
+          { value: "领取灵活度", help: "评级" }, { value: "保证给付期间", help: "单位：年" },
+          { value: "起领年龄选项", help: "枚举" }, { value: "费用透明度", help: "评级" }
+        ],
+        "医疗险": [
+          { value: "保额", help: "单位：万元" }, { value: "免赔额", help: "单位：元" },
+          { value: "报销比例", help: "单位：%" }, { value: "保证续保年限", help: "单位：年" },
+          { value: "外购药", help: "有/无" }, { value: "增值服务", help: "枚举" },
+          { value: "保费", help: "单位：元/年" }
+        ],
+        "定期寿险": [
+          { value: "保额上限", help: "单位：万元" }, { value: "免责条款数量", help: "单位：条" },
+          { value: "保费", help: "单位：元/年" }, { value: "职业限制", help: "1-4类 / 1-6类" },
+          { value: "核保宽松度", help: "评级" }
+        ]
+      };
+      const dims = dimsByType[c.template] || dimsByType["重疾险"];
+      const template = field("comparison.template", "险种对比模板", c.template, { select: Object.keys(dimsByType).map(function (k) { return { value: k, label: k }; }), help: "不同险种的「好」不是一回事，对比维度必须按险种分组。" });
+      const dimChecks = listChecks("comparison.dims", dims, c.dims, { kind: "", text: "每个维度都要配编码、取值类型和单位。没有编码靠中文名匹配，两个运营建的「赔付次数」会变成不同维度，对比表出现重复行。" });
+      const cross = '<label class="check-card"><input type="checkbox" data-bind="comparison.crossCheck"' + (c.crossCheck ? " checked" : "") + '><span><strong>已确认无可比性冲突</strong><span>医疗险报销比例（%）不能与重疾给付比例（%）放在同一行——一个是报销上限、一个是保额比例，概念不同，放一起就是误导。</span></span></label>';
+      const rating = '<div class="fields">' + field("comparison.rating", "综合评级", c.rating, { select: [{ value: "S", label: "S" }, { value: "A", label: "A" }, { value: "B", label: "B" }, { value: "C", label: "C" }], help: "评级区间需公示，否则用户不知道 S 好在哪；若 90% 产品都是 S，评级就失去区分度。" }) + "</div>";
+      const conclusion = field("comparison.conclusion", "测评结论", c.conclusion, { wide: true, textarea: true, help: "必须标注依据和局限性。禁止「最好的产品」「全网最低价」「性价比第一」等绝对化表述。" });
+      const check = '<div class="button-row"><button class="btn" type="button" data-action="check-conclusion">模拟合规检查</button></div><div class="state-card" style="margin-top:12px"><div class="state-line"><span>合规检查结果</span>' + (c.bannedHit ? pill("检测到违禁表述：" + c.bannedHit, "error") : pill(c.conclusion.trim() ? "未检测到绝对化表述" : "尚未检查", c.conclusion.trim() ? "good" : "wait")) + '</div><div class="state-line"><span>业务复核状态</span>' + pill(c.conclusionReviewed ? "已通过审核" : "待审核", c.conclusionReviewed ? "good" : "wait") + "</div></div><div id=\"compareFeedback\" aria-live=\"polite\"></div>";
+      const preview = '<div class="channel-preview"><div class="preview-top">前台对比表预览 · ' + escapeHTML(c.template) + '</div><div class="preview-body"><h3>' + escapeHTML(state.identity.saleName || "待填写销售名") + '</h3><div class="doc-table-wrap"><table class="doc-table"><tbody>' + (c.dims.length ? c.dims.map(function (d) { return '<tr><td class="doc-kind">' + escapeHTML(d) + '</td><td><span class="hint">数据来源：模块 03 责任配置' + (c.crossCheck ? "" : " · 可比性未确认") + "</span></td></tr>"; }).join("") : '<tr><td colspan="2"><span class="hint">未选择对比维度，前台对比表不会有内容</span></td></tr>') + '</tbody></table></div><p style="margin-top:8px">' + pill("评级 " + c.rating, c.rating === "S" || c.rating === "A" ? "good" : "wait") + "</p></div></div>";
+      const body = template + '<h3 class="subhead">对比维度库</h3>' + dimChecks + '<h3 class="subhead">跨险种可比性</h3><div class="check-grid">' + cross + '</div><h3 class="subhead">权重、评级与结论</h3>' + rating + conclusion + check + '<h3 class="subhead">前台预览</h3>' + preview;
+      return panel("对比与测评数据", "让用户选完产品后有依据地比较，而不是看参数堆砌。", body);
+    }
+    function renderStep() {
+      renderNav();
+      renderHeader();
+      const index = state.current;
+      const body = [docsStep, identityStep, planStep, rulesStep, quoteStep, pageStep, acceptanceStep, publishStep, tagsStep, comparisonStep][index]();
+      const intro = '<div class="page-head"><div><div class="eyebrow">' + (index >= 8 ? "推荐侧演练" : "产品接入演练") + ' / 模块 ' + String(index + 1).padStart(2, "0") + '</div><h1>' + escapeHTML(stepNames[index]) + '</h1><p class="page-desc">' + escapeHTML(stepDescriptions[index]) + '</p></div><div class="step-counter">第 ' + (index + 1) + " 步，共 10 步</div></div>";
+      document.getElementById("stepRoot").innerHTML = intro + '<div class="content-grid"><div>' + body + footerActions() + "</div>" + helperRail(index) + "</div>";
+    }
+    function required(value) { return String(value == null ? "" : value).trim().length > 0; }
+    function validateStep(index) {
+      const errors = [];
+      if (index === 0) {
+        ["salesPage", "contract", "riderContract", "spec", "notice", "healthDoc", "exclusion"].forEach(function (id) {
+          const doc = state.docs.find(function (item) { return item.id === id; });
+          if (!doc) errors.push("缺少必填资料：" + id);
+          else {
+            if (!required(doc.source)) errors.push(doc.kind + "缺少来源。");
+            if (!required(doc.scope)) errors.push(doc.kind + "缺少适用范围。");
+            if (!String(doc.status).startsWith("已确认")) errors.push(doc.kind + "尚未完成复核。");
+          }
+        });
+      } else if (index === 1) {
+        ["saleName", "formalName", "insurer", "insuranceType", "supplyChannel", "supplyForm", "externalProductId", "externalPlanId", "platformId"].forEach(function (key) {
+          if (!required(state.identity[key])) errors.push("请填写" + ({ saleName: "销售名", formalName: "正式产品名", insurer: "承保公司", insuranceType: "险种", supplyChannel: "供货渠道", supplyForm: "产品供应形态", externalProductId: "外部产品标识", externalPlanId: "外部计划标识", platformId: "平台产品标识" })[key] + "。");
+        });
+        const codePatterns = { "齐欣": /^QX\d{12}$/, "凤栖": /^\d{19}$/, "牛保": /^\d{6}$/, "i云保": /^\d{5}$/, "易升": /^\d{9}$/, "专心": /^PC\d{5}$/ };
+        const codeRule = codePatterns[state.identity.supplyChannel];
+        if (required(state.identity.channelProductCode) && codeRule && !codeRule.test(state.identity.channelProductCode)) {
+          errors.push("渠道产品编码与「" + state.identity.supplyChannel + "」的编码格式不符（对照数据字典第 8 节）。");
+        }
+        if (!state.stepDone[0]) errors.push("请先完成资料复核。");
+      } else if (index === 2) {
+        ["life", "age70"].forEach(function (planId) {
+          const item = state.plans[planId];
+          ["name", "planId", "duration", "paymentTerm", "criticalPercent", "clauseBasis", "middlePercent", "middleLimit", "mildPercent", "mildLimit"].forEach(function (key) {
+            if (!required(item[key])) errors.push((planId === "life" ? "保终身" : "保至70岁") + "计划缺少必填配置。");
+          });
+        });
+        if (!state.stepDone[1]) errors.push("请先完成产品主档。");
+      } else if (index === 3) {
+        const missing = ["region", "age", "occupation", "channels", "sumMin", "sumMax", "sumStep", "healthNotice"].filter(function (key) { return !required(state.rules[key]); });
+        if (missing.length) errors.push("销售范围与规则配置不完整（含保额范围、健康告知摘要）。");
+        if (!state.stepDone[2]) errors.push("请先完成计划与责任配置。");
+      } else if (index === 4) {
+        if (state.quote.source === "none") errors.push("请选择报价来源或明确的权威资料类型。");
+        if (!required(state.quote.payFrequency)) errors.push("请选择支付频率。");
+        if (!required(state.quote.validUntil)) errors.push("请填写报价有效期。");
+        ["age", "gender", "sumAssured", "duration", "paymentTerm", "responsibility", "channel", "version"].forEach(function (key) { if (!state.quote[key]) errors.push("报价输入缺少" + key + "字段。"); });
+        if (!state.stepDone[3]) errors.push("请先完成销售范围与规则。");
+      } else if (index === 5) {
+        if (!required(state.page.summary)) errors.push("责任摘要不可为空。");
+        if (!required(state.page.clauseLink)) errors.push("请登记条款与须知链接状态。");
+        if (!state.page.channelWeb && !state.page.channelMobile) errors.push("至少选择一个演练渠道。");
+        if (!state.page.show) errors.push("详情需可展示才能验收页面内容。");
+        if (!state.page.quote) errors.push("试算入口需可见才能验收报价状态。");
+        if (!state.stepDone[4]) errors.push("请先完成报价来源配置。");
+      } else if (index === 6) {
+        if (state.acceptance.status !== "复测通过") errors.push("请运行完整验收并取得复测通过结论。");
+        if (!state.stepDone[5]) errors.push("请先完成页面内容与渠道。");
+      } else if (index === 7) {
+        if (!state.versions.length) errors.push("推荐侧的前提是产品已发布生效。请先批准发布，再进入标签与分类体系。");
+      } else if (index === 8) {
+        if (!state.tags.health.length) errors.push("请至少打一个健康标签（确无适用场景可只打「核保宽松」）。");
+        else if (!state.tags.healthReviewed) errors.push("健康标签必须经保险业务复核人确认，运营自己打的不算数。");
+        if (!state.tags.demand.length && !state.tags.scene.length) errors.push("至少打一个需求标签或场景标签，否则前台筛选不到本产品。");
+      } else if (index === 9) {
+        if (!state.comparison.dims.length) errors.push("请至少选择一个对比维度，否则前台对比表没有内容。");
+        if (!state.comparison.crossCheck) errors.push("请确认跨险种可比性，避免把不可比的维度放进同一行。");
+        if (!required(state.comparison.conclusion)) errors.push("测评结论不可为空。");
+        else if (state.comparison.bannedHit) errors.push("测评结论含绝对化表述：" + state.comparison.bannedHit);
+        else if (!state.comparison.conclusionReviewed) errors.push("请先运行合规检查，通过后再提交。");
+      }
+      return errors;
+    }
+    function saveDraft() {
+      persist();
+      showToast(state.version + " 草稿已保存在当前浏览器。");
+    }
+    function continueStep() {
+      const errors = validateStep(state.current);
+      const feedback = document.getElementById("stepFeedback");
+      if (errors.length) {
+        if (feedback) feedback.innerHTML = '<span style="color:var(--red);font-weight:700">' + escapeHTML(errors[0]) + (errors.length > 1 ? " 另有 " + (errors.length - 1) + " 项待处理。" : "") + "</span>";
+        showToast(errors[0]);
+        return;
+      }
+      state.stepDone[state.current] = true;
+      persist();
+      if (state.current < 9) state.current += 1;
+      renderStep();
+    }
+    function moduleError(message, kind) {
+      const feedback = document.getElementById("moduleFeedback") || document.getElementById("publishFeedback");
+      if (feedback) feedback.innerHTML = '<div class="inline-note ' + (kind || "error") + '">' + escapeHTML(message) + "</div>";
+    }
+    function markEdited(stepIndex) {
+      if (typeof stepIndex === "number" && stepIndex >= 0 && stepIndex < 10 && stepIndex !== 7) {
+        state.stepDone[stepIndex] = false;
+        if (stepIndex < 6) {
+          state.acceptance.status = "未开始";
+          state.acceptance.rows = [];
+        }
+        if (state.stepDone[6] && stepIndex < 7) state.stepDone[6] = false;
+        if (stepIndex === 8) state.tags.healthReviewed = false;
+        if (stepIndex === 9) state.comparison.conclusionReviewed = false;
+      }
+      if (state.activeSnapshot) state.hasUnpublishedEdits = true;
+      persist();
+      renderHeader();
+      renderNav();
+    }
+    function docReview() {
+      const missing = ["salesPage", "contract", "riderContract", "spec", "notice", "healthDoc", "exclusion"].filter(function (id) { return !state.docs.some(function (doc) { return doc.id === id; }); });
+      if (missing.length) {
+        moduleError("复核未通过：必填资料已删除。请添加回缺少的资料项，再发起复核。");
+        return;
+      }
+      const empty = state.docs.filter(function (doc) { return doc.required && (!required(doc.source) || !required(doc.scope)); });
+      if (empty.length) {
+        moduleError("复核未通过：" + empty[0].kind + "来源或适用范围为空。");
+        return;
+      }
+      state.docs.forEach(function (doc) {
+        if (doc.required && doc.status !== "已确认（公开事实）") doc.status = "已确认（演练）";
+      });
+      state.stepDone[0] = true;
+      persist();
+      renderStep();
+      showToast("演练复核已记录。正式接入仍需核对获授权资料。");
+    }
+    function removeDoc(index) {
+      const removed = state.docs.splice(index, 1)[0];
+      if (removed && ["salesPage", "contract", "notice"].includes(removed.id)) state.stepDone[0] = false;
+      markEdited(0);
+      renderStep();
+      showToast("已移除资料项。必填资料缺失时，复核会被拦截。");
+    }
+    function addDoc() {
+      const id = "extra" + String(Date.now());
+      state.docs.push({ id: id, kind: "补充资料", source: "", scope: "", status: "待补", required: false });
+      markEdited(0);
+      renderStep();
+      const item = document.querySelector('[data-bind="docs.' + (state.docs.length - 1) + '.source"]');
+      if (item) item.focus();
+    }
+    function simulateTraffic() {
+      const payload = state.rules.trafficPayload;
+      const result = document.getElementById("trafficResult");
+      if (!result) return;
+      if (payload === "one" || payload === "two") {
+        result.className = "test-result bad";
+        result.innerHTML = "<strong>已拦截：</strong>交通责任需三项一起选择，缺项请求不能进入报价或投保。";
+      } else {
+        result.className = "test-result good";
+        result.innerHTML = payload === "all" ? "<strong>校验通过：</strong>三项责任齐全，可进入下一步模拟。" : "<strong>校验通过：</strong>三项均未选择，组合保持关闭。";
+      }
+    }
+    function runSample() {
+      const sample = state.acceptance.selectedCase;
+      let message = "";
+      let good = true;
+      if (sample === "normal") {
+        const errors = validateStep(1).concat(validateStep(2), validateStep(4));
+        if (errors.length) {
+          good = false;
+          message = "正常样例未通过：" + errors[0];
+        } else {
+          message = "详情身份与保障期间可预览。报价字段校验通过，权威来源待调用，本次不显示金额。";
+        }
+      } else if (sample === "trafficNone" || sample === "trafficAll") {
+        message = "组合校验通过：" + (sample === "trafficNone" ? "三项全不选" : "三项齐全") + "，可以继续模拟。";
+      } else {
+        good = false;
+        message = "已拦截：" + (sample === "trafficOne" ? "请求只送一项" : "请求只送两项") + "，交通三项需一起选择。";
+      }
+      state.acceptance.lastFeedback = message;
+      if (sample === "trafficOne" || sample === "trafficTwo") state.rules.trafficPayload = sample === "trafficOne" ? "one" : "two";
+      persist();
+      const result = document.getElementById("sampleResult");
+      result.className = "test-result " + (good ? "good" : "bad");
+      result.textContent = message;
+      showToast(good ? "样例反馈已记录。" : "无效样例已按规则拦截。");
+    }
+    function runSuite() {
+      const failures = [];
+      for (let i = 0; i < 6; i += 1) {
+        const errors = validateStep(i);
+        if (!state.stepDone[i]) failures.push(stepNames[i] + "尚未保存完成。");
+        if (errors.length) failures.push(errors[0]);
+      }
+      const outcomes = [
+        { label: "正常方案可生成详情预览", pass: state.stepDone[1] && state.stepDone[2] && state.page.show },
+        { label: "报价仅显示字段校验和待调用状态", pass: state.stepDone[4] && state.quote.source !== "none" },
+        { label: "交通三项全不选可继续", pass: validateTrafficPayload("none") === true },
+        { label: "交通三项齐全可继续", pass: validateTrafficPayload("all") === true },
+        { label: "交通只送一项会被拦截", pass: validateTrafficPayload("one") === false },
+        { label: "交通只送两项会被拦截", pass: validateTrafficPayload("two") === false },
+        { label: "保终身与保至70岁分别有方案", pass: required(state.plans.life.name) && required(state.plans.age70.name) }
+      ];
+      outcomes.forEach(function (row) { if (!row.pass) failures.push("验收未通过：" + row.label + "。"); });
+      state.acceptance.rows = outcomes;
+      if (failures.length) {
+        state.acceptance.status = "有问题";
+        state.acceptance.lastFeedback = failures[0];
+        state.stepDone[6] = false;
+      } else {
+        state.acceptance.status = "复测通过";
+        state.acceptance.lastFeedback = "本地模拟用例全部通过，可提交模拟发布审核。";
+        state.stepDone[6] = true;
+      }
+      persist();
+      renderStep();
+      showToast(failures.length ? "完整验收有未通过项，请先完成前序配置。" : "完整验收通过，可以进入模拟审核。");
+    }
+    function validateTrafficPayload(payload) {
+      return payload === "none" || payload === "all";
+    }
+    function draftReady() {
+      const errors = [];
+      for (let i = 0; i < 7; i += 1) {
+        const itemErrors = validateStep(i);
+        if (!state.stepDone[i]) errors.push(stepNames[i] + "尚未完成。");
+        if (itemErrors.length) errors.push(itemErrors[0]);
+      }
+      if (state.acceptance.status !== "复测通过") errors.push("验收尚未通过。");
+      if (!required(state.reviewNote)) errors.push("请填写审批意见。");
+      return errors;
+    }
+    function submitReview() {
+      const errors = draftReady();
+      if (errors.length) {
+        moduleError("暂不能提交审核：" + errors[0]);
+        showToast(errors[0]);
+        return;
+      }
+      state.status = "待审核";
+      state.stepDone[7] = true;
+      persist();
+      renderStep();
+      showToast("已进入待审核状态。请用发布负责人动作批准演练版本。");
+    }
+    function buildSnapshot() {
+      const selected = state.plans[state.selectedPlan];
+      return {
+        version: state.version,
+        status: "已生效",
+        publishedAt: state.effectiveAt ? state.effectiveAt.replace("T", " ") : new Date().toLocaleString("zh-CN"),
+        saleName: state.identity.saleName,
+        formalName: state.identity.formalName,
+        insurer: state.identity.insurer,
+        planName: selected.name,
+        duration: selected.duration,
+        responsibilitySummary: "中症" + selected.middlePercent + "%限" + selected.middleLimit + "次，轻症" + selected.mildPercent + "%限" + selected.mildLimit + "次",
+        channels: [state.page.channelWeb ? "经纪平台 Web" : "", state.page.channelMobile ? "移动端样例" : ""].filter(Boolean).join("、") || "无渠道",
+        acceptanceStatus: state.acceptance.status
+      };
+    }
+    function approvePublish() {
+      if (state.status !== "待审核") {
+        moduleError("发布已拦截：请先提交审核，并确保验收通过。");
+        showToast("当前状态不允许发布。");
+        return;
+      }
+      const errors = draftReady();
+      if (errors.length || state.acceptance.status !== "复测通过") {
+        state.status = "草稿";
+        state.stepDone[7] = false;
+        persist();
+        renderStep();
+        moduleError("发布已拦截：" + (errors[0] || "验收未通过。"));
+        return;
+      }
+      state.status = "已生效";
+      const snapshot = buildSnapshot();
+      state.activeSnapshot = clone(snapshot);
+      state.versions.push(snapshot);
+      state.hasUnpublishedEdits = false;
+      persist();
+      renderStep();
+      showToast(state.version + " 已模拟发布，历史摘要已记录。");
+    }
+    function newRevision() {
+      if (!state.activeSnapshot || !state.hasUnpublishedEdits) {
+        moduleError("先修改一个配置字段，再新建改版。");
+        return;
+      }
+      state.versionMinor += 1;
+      state.version = "v" + state.versionMajor + "." + state.versionMinor;
+      state.status = "草稿";
+      state.hasUnpublishedEdits = false;
+      state.acceptance.status = "未开始";
+      state.acceptance.rows = [];
+      state.acceptance.lastFeedback = "";
+      state.stepDone[7] = false;
+      persist();
+      renderHeader();
+      renderStep();
+      showToast("已创建 " + state.version + " 改版草稿，旧版摘要仍保留。");
+    }
+    function toggleList(control) {
+      const path = control.getAttribute("data-path");
+      const value = control.getAttribute("data-value");
+      const arr = getPath(path);
+      if (!Array.isArray(arr)) return;
+      const at = arr.indexOf(value);
+      if (control.checked && at < 0) arr.push(value);
+      if (!control.checked && at >= 0) arr.splice(at, 1);
+      markEdited(path.indexOf("tags.") === 0 ? 8 : 9);
+      renderStep();
+    }
+    function reviewHealth() {
+      if (!state.tags.health.length) {
+        const node = document.getElementById("tagFeedback");
+        if (node) node.innerHTML = '<div class="inline-note error">请先选择至少一个健康标签，再提交业务复核。</div>';
+        showToast("请先选择健康标签。");
+        return;
+      }
+      state.tags.healthReviewed = true;
+      persist();
+      renderStep();
+      showToast("健康标签已由保险业务复核人确认，可生效。");
+    }
+    function checkConclusion() {
+      const text = String(state.comparison.conclusion || "").trim();
+      const banned = ["最好", "最佳", "最强", "第一", "最低价", "全网最", "性价比最高", "绝对", "保证收益", "唯一"];
+      if (!text) {
+        state.comparison.bannedHit = "";
+        state.comparison.conclusionReviewed = false;
+        persist();
+        renderStep();
+        showToast("请先填写测评结论。");
+        return;
+      }
+      const hits = banned.filter(function (word) { return text.indexOf(word) >= 0; });
+      state.comparison.bannedHit = hits.length ? hits.join("、") : "";
+      state.comparison.conclusionReviewed = hits.length === 0;
+      persist();
+      renderStep();
+      if (hits.length) showToast("检测到绝对化表述：" + hits.join("、") + "。测评结论禁止使用这类表述。");
+      else showToast("未检测到绝对化表述，可进入下一步。");
+    }
+    function reset() {
+      localStorage.removeItem(STORAGE_KEY);
+      state = clone(initialState);
+      persist();
+      renderStep();
+      showToast("演练已重置为初始草稿。");
+    }
+    function handleBoundInput(element) {
+      const path = element.getAttribute("data-bind");
+      if (!path) return;
+      const oldValue = getPath(path);
+      const value = element.type === "checkbox" ? element.checked : element.value;
+      if (oldValue === value) return;
+      setPath(path, value);
+      const segments = path.split(".");
+      const moduleIndex = { docs: 0, identity: 1, plans: 2, rules: 3, quote: 4, page: 5, acceptance: 6, tags: 8, comparison: 9 };
+      const index = Object.prototype.hasOwnProperty.call(moduleIndex, segments[0]) ? moduleIndex[segments[0]] : 7;
+      markEdited(index);
+      if (path === "rules.trafficEnabled") {
+        const text = document.getElementById("trafficSwitchText");
+        if (text) text.textContent = value ? "已开启" : "未开启";
+        document.querySelector(".traffic-items")?.classList.toggle("is-hidden", !value);
+      }
+      if (path === "identity.saleName") {
+        const a = document.getElementById("identitySalePreview");
+        const b = document.getElementById("pagePreviewTitle");
+        if (a) a.textContent = value;
+        if (b) b.textContent = value;
+      }
+      if (path === "identity.formalName") { const node = document.getElementById("identityFormalPreview"); if (node) node.textContent = value; }
+      if (path === "identity.supplyChannel") { const node = document.getElementById("identityChannelPreview"); if (node) node.textContent = value; }
+      if (path === "identity.insurer") {
+        const a = document.getElementById("identityInsurerPreview");
+        const b = document.getElementById("pagePreviewInsurer");
+        if (a) a.textContent = value;
+        if (b) b.textContent = value;
+      }
+      if (path === "page.summary") { const node = document.getElementById("pagePreviewSummary"); if (node) node.textContent = value; }
+    }
+    document.addEventListener("input", function (event) { handleBoundInput(event.target); });
+    document.addEventListener("change", function (event) {
+      if (event.target.matches("[data-bind]")) handleBoundInput(event.target);
+    });
+    document.addEventListener("click", function (event) {
+      const control = event.target.closest("[data-action]");
+      if (!control) return;
+      const action = control.getAttribute("data-action");
+      if (action === "goto") { state.current = Number(control.getAttribute("data-index")); persist(); renderStep(); }
+      else if (action === "save") saveDraft();
+      else if (action === "continue") continueStep();
+      else if (action === "previous") { state.current = Math.max(0, state.current - 1); persist(); renderStep(); }
+      else if (action === "reset") reset();
+      else if (action === "add-doc") addDoc();
+      else if (action === "remove-doc") removeDoc(Number(control.getAttribute("data-index")));
+      else if (action === "review-docs") docReview();
+      else if (action === "select-plan") { state.selectedPlan = control.getAttribute("data-plan"); persist(); renderStep(); }
+      else if (action === "simulate-traffic") simulateTraffic();
+      else if (action === "run-sample") runSample();
+      else if (action === "run-suite") runSuite();
+      else if (action === "submit-review") submitReview();
+      else if (action === "approve-publish") approvePublish();
+      else if (action === "new-revision") newRevision();
+      else if (action === "toggle-list") toggleList(control);
+      else if (action === "review-health") reviewHealth();
+      else if (action === "check-conclusion") checkConclusion();
+    });
+    renderStep();
+  </script>
+</body>
+</html>
